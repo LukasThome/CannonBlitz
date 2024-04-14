@@ -1,19 +1,33 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox , Menu
 import random
 
-class BattlefieldGame:
+class PlayerInterface:
     def __init__(self, master):
         self.master = master
         self.rows = 3
         self.cols = 5
         self.current_player = 1
         self.saldo = [0, 0]  # Saldo de cada jogador
+        self.create_menu()  # Adicionando a criação do menu
         self.create_boards()
         self.create_controls()
         self.add_fixed_bases(self.board1)  # Adiciona bases fixas para o jogador
         self.add_fixed_bases(self.board2)  # Adiciona bases fixas para o oponente
 
+
+    def create_menu(self):
+        # Criando o menu
+        self.menu = Menu(self.master)
+        self.master.config(menu=self.menu)
+
+        # Adicionando opções ao menu
+        self.game_menu = Menu(self.menu)
+        self.menu.add_cascade(label="Menu", menu=self.game_menu)
+        self.game_menu.add_command(label="Iniciar Partida", command=self.start_game)
+
+    def start_game(self):
+        messagebox.showinfo("Partida Iniciada", "A partida foi iniciada!")
 
     def create_boards(self):
         frame1 = tk.Frame(self.master)
@@ -59,7 +73,7 @@ class BattlefieldGame:
         self.tiro_preciso_button = tk.Button(control_frame, text="Tiro Preciso $1", command=self.tiro_preciso, state=tk.ACTIVE)
         self.tiro_preciso_button.grid(row=2, column=0, padx=3, pady=3)
 
-        self.base_button = tk.Button(control_frame, text="Tiro Normal", command=self.tiro, state=tk.ACTIVE)
+        self.base_button = tk.Button(control_frame, text="Tiro Normal", command=self.tiro_normal, state=tk.ACTIVE)
         self.base_button.grid(row=3, column=0, padx=3, pady=3)
 
         self.tiro_forte_button = tk.Button(control_frame, text="Tiro Forte $3", command=self.tiro_forte, state=tk.ACTIVE)
@@ -88,7 +102,7 @@ class BattlefieldGame:
         else:
             messagebox.showerror("Saldo Insuficiente", "Você não tem saldo suficiente para realizar um tiro preciso.")
         
-    def tiro(self):
+    def tiro_normal(self):
         row = random.randint(0, self.rows - 1)
         col = random.randint(0, self.cols - 1)
 
@@ -170,7 +184,7 @@ class BattlefieldGame:
 def main():
     root = tk.Tk()
     root.title("Cannon Blitz")
-    game = BattlefieldGame(root)
+    game = PlayerInterface(root)
     root.mainloop()
 
 if __name__ == "__main__":
