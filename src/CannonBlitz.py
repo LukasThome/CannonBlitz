@@ -1,8 +1,11 @@
+from tkinter import *
 import tkinter as tk
-from tkinter import messagebox , Menu
+from tkinter import messagebox , Menu, simpledialog
 import random
+from dog.dog_interface import DogPlayerInterface
+from dog.dog_actor import DogActor
 
-class PlayerInterface:
+class PlayerInterface(DogPlayerInterface):
     def __init__(self, master):
         self.master = master
         self.rows = 3
@@ -14,6 +17,10 @@ class PlayerInterface:
         self.create_controls()
         self.add_fixed_bases(self.board1)  # Adiciona bases fixas para o jogador
         self.add_fixed_bases(self.board2)  # Adiciona bases fixas para o oponente
+        self.player_name = simpledialog.askstring(title="Player identification", prompt="Qual o seu nome?")
+        self.dog_server_interface = DogActor()
+        message = self.dog_server_interface.initialize(self.player_name, self)
+        messagebox.showinfo(message=message)
 
 
     def create_menu(self):
@@ -24,10 +31,16 @@ class PlayerInterface:
         # Adicionando opções ao menu
         self.game_menu = Menu(self.menu)
         self.menu.add_cascade(label="Menu", menu=self.game_menu)
-        self.game_menu.add_command(label="Iniciar Partida", command=self.start_game)
+        self.game_menu.add_command(label="Iniciar Partida", command=self.start_match)
 
-    def start_game(self):
-        messagebox.showinfo("Partida Iniciada", "A partida foi iniciada!")
+    def start_match(self):
+        start_status = self.dog_server_interface.start_match(2)
+        message = start_status.get_message()
+        messagebox.showinfo(message=message)
+
+    def receive_start(self, start_status):
+        message = start_status.get_message()
+        messagebox.showinfo(message=message)
 
     def create_boards(self):
         frame1 = tk.Frame(self.master)
