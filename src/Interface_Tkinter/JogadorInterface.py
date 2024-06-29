@@ -12,53 +12,20 @@ from Interface_Tkinter import Label
 from Interface_Tkinter import Menu
 from Interface_Tkinter import Frame
 from Interface_Tkinter import TK
-from DOG import StartStatus
-from DOG import DogPlayerInterface
 
 class JogadorInterface(DogPlayerInterface):
 
-	def __init__(self):
-		self._janela_principal = None
-		"""@AttributeType Tk"""
-		self._tabuleiro = None
-		"""@AttributeType Dominio do problema.Tabuleiro"""
-		self._logo_label = None
-		"""@AttributeType Interface Tkinter.Label"""
-		self._nome_jogador = None
-		"""@AttributeType string"""
-		self._dog_server_interface_DogActor = None
-		self._mensagem = None
-		"""@AttributeType Interface Tkinter.Label"""
-		self._barra_menu = None
-		"""@AttributeType Interface Tkinter.Menu"""
-		self._arquivo_menu = None
-		"""@AttributeType Interface Tkinter.Menu"""
-		self._frame = None
-		"""@AttributeType Interface Tkinter.Frame"""
-		self._unnamed_Frame_ = None
-		"""@AttributeType Interface Tkinter.Frame
-		# @AssociationType Interface Tkinter.Frame
-		# @AssociationMultiplicity 1
-		# @AssociationKind Aggregation"""
-		self._unnamed_Menu_ = []
-		"""@AttributeType Interface Tkinter.Menu*
-		# @AssociationType Interface Tkinter.Menu[]
-		# @AssociationMultiplicity 2
-		# @AssociationKind Aggregation"""
-		self._unnamed_Label_ = []
-		"""@AttributeType Interface Tkinter.Label*
-		# @AssociationType Interface Tkinter.Label[]
-		# @AssociationMultiplicity 2
-		# @AssociationKind Aggregation"""
-		self._unnamed_TK_ = None
-		"""@AttributeType Interface Tkinter.TK
-		# @AssociationType Interface Tkinter.TK
-		# @AssociationMultiplicity 1
-		# @AssociationKind Aggregation"""
-		self._unnamed_Tabuleiro_ = None
-		"""@AttributeType Dominio do problema.Tabuleiro
-		# @AssociationType Dominio do problema.Tabuleiro"""  
-	
+	def __init__(self):    
+		self.janela_principal = Tk()
+		self.tabuleiro = Tabuleiro()
+		self.nome_jogador = simpledialog.askstring(title="Identificador do Jogador", prompt="Qual o seu nome?")
+		self.dog_server_interface = DogActor()
+		self.barra_menu = Menu()
+		self.arquivo_menu = Menu()
+		self._frame = Frame()
+		message = self.dog_server_interface.initialize(self.nome_jogador, self)
+		messagebox.showinfo(message=message)
+
 	def atualizar_interface(self):
 		pass
 
