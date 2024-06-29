@@ -11,12 +11,12 @@ class JogadorInterface(DogPlayerInterface):
         self.janela_principal = Tk()
         self.desenhar_janela_principal()
         self.tabuleiro = Tabuleiro()  
-        self.nome_jogador = simpledialog.askstring(title="Identificador do Jogador", prompt="Qual o seu nome?")
+        nome_jogador = simpledialog.askstring(title="Identificador do Jogador", prompt="Qual o seu nome?")
         self.dog_server_interface = DogActor()
-        # self.barra_menu = Menu()
-        # self.arquivo_menu = Menu()
-        message = self.dog_server_interface.initialize(self.nome_jogador, self)
+        message = self.dog_server_interface.initialize(nome_jogador, self)
         messagebox.showinfo(message=message)
+         # self.barra_menu = Menu()
+        # self.arquivo_menu = Menu()
     
     def atualizar_interface(self):
         pass

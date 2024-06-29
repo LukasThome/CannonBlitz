@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-from Dominio_do_problema import Canhao
-from Dominio_do_problema import Tiro
+import Canhao
+import Tiro
 
 #class TiroNormal(Tiro):
 class TiroNormal():
