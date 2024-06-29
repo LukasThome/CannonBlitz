@@ -15,9 +15,9 @@ class JogadorInterface(DogPlayerInterface):
         self.dog_server_interface = DogActor()
         message = self.dog_server_interface.initialize(nome_jogador, self)
         messagebox.showinfo(message=message)
-         # self.barra_menu = Menu()
+        # self.barra_menu = Menu()
         # self.arquivo_menu = Menu()
-        self.janela_principal.mainloop()  # abrir a janela COISA NOVA AQUI
+        self.janela_principal.mainloop() 
     
     def atualizar_interface(self):
         pass
@@ -36,7 +36,21 @@ class JogadorInterface(DogPlayerInterface):
                 row_buttons.append(button)
             self.board1.append(row_buttons)
 
-        Label(self.janela_principal, text="").grid(row=1, column=0)
+        Label(self.janela_principal, text="Cannon Blitz").grid(row=1, column=0)
+        
+        
+        
+        frame2 = Frame(self.janela_principal)
+        frame2.grid(row=2, column=0, padx=3, pady=3)
+        self.board2 = []
+        
+        for i in range(3):
+            row_buttons = []
+            for j in range(5):
+                button = Button(frame2, width=5, height=2, command=lambda row=i, col=j, player=2: self.button_click(row, col, player))
+                button.grid(row=i, column=j, padx=1, pady=1)
+                row_buttons.append(button)
+            self.board2.append(row_buttons)
 
         # Botões
         control_frame = Frame(self.janela_principal)
@@ -128,6 +142,3 @@ class JogadorInterface(DogPlayerInterface):
     def receber_desistencia(self):
         pass
 
-# if __name__ == "__main__":
-#     JogadorInterface()
-#     mainloop()
