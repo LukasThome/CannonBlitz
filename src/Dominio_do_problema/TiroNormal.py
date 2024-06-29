@@ -3,7 +3,8 @@
 from Dominio_do_problema import Canhao
 from Dominio_do_problema import Tiro
 
-class TiroNormal(Tiro):
+#class TiroNormal(Tiro):
+class TiroNormal():
 	def resetar_precisao(self):
 		pass
 

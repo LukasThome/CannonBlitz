@@ -1,8 +1,8 @@
-#!/usr/bin/python
-# -*- coding: UTF-8 -*-
-from Dominio_do_problema import Campo
 
-class Posicao(object):
+from Dominio_do_problema.Campo import Campo
+
+#class Posicao(object):
+class Posicao:
 	def get_defesa(self):
 		"""@ReturnType boolean"""
 		pass

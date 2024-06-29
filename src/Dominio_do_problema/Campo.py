@@ -1,10 +1,11 @@
-#!/usr/bin/python
-# -*- coding: UTF-8 -*-
-from Dominio_do_problema import Tabuleiro
-from Dominio_do_problema import Posicao
-from Dominio_do_problema import Jogador
 
-class Campo(object):
+#from Dominio_do_problema.Tabuleiro import Tabuleiro
+#from Dominio_do_problema.Posicao import Posicao
+#from Dominio_do_problema.Jogador import Jogador
+
+#class Campo(object):
+
+class Campo:
 	def campo_tem_base(self):
 		"""@ReturnType boolean"""
 		pass

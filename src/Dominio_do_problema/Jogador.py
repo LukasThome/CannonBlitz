@@ -1,9 +1,7 @@
-#!/usr/bin/python
-# -*- coding: UTF-8 -*-
-from Dominio_do_problema import Tabuleiro
-from Dominio_do_problema import Campo
+from Dominio_do_problema.Campo import Campo 
 
-class Jogador(object):
+class Jogador:
+    
 	def informar_turno(self):
 		"""@ReturnType boolean"""
 		pass
@@ -47,9 +45,9 @@ class Jogador(object):
 	def __init__(self):
 		self._nome = None
 		"""@AttributeType string"""
-		self._vencedor = false
+		self._vencedor = False
 		"""@AttributeType boolean"""
-		self._turno = false
+		self._turno = False
 		"""@AttributeType boolean"""
 		self._saldo = 0
 		"""@AttributeType int"""
