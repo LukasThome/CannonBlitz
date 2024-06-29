@@ -17,6 +17,7 @@ class JogadorInterface(DogPlayerInterface):
         messagebox.showinfo(message=message)
          # self.barra_menu = Menu()
         # self.arquivo_menu = Menu()
+        self.janela_principal.mainloop()  # abrir a janela COISA NOVA AQUI
     
     def atualizar_interface(self):
         pass
@@ -75,7 +76,9 @@ class JogadorInterface(DogPlayerInterface):
         pass
 
     def iniciar_partida(self):
-        pass
+        start_status = self.dog_server_interface.start_match(2)
+        message = start_status.get_message()
+        messagebox.showinfo(message=message)
 
     def receive_start(self, aStart_status):
         pass
@@ -125,6 +128,6 @@ class JogadorInterface(DogPlayerInterface):
     def receber_desistencia(self):
         pass
 
-if __name__ == "__main__":
-    JogadorInterface()
-    mainloop()
+# if __name__ == "__main__":
+#     JogadorInterface()
+#     mainloop()
