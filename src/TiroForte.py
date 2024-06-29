@@ -10,7 +10,7 @@
 # 		# @AssociationType Dominio do problema.Canhao"""
 
 # Importa a classe Tiro corretamente
-from Dominio_do_problema.Tiro import Tiro
+from Tiro import Tiro
 
 class TiroForte(Tiro):
     def __init__(self):

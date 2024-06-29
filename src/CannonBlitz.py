@@ -1,3 +1,3 @@
-from Interface_Tkinter import JogadorInterface
+import JogadorInterface
 
 JogadorInterface.JogadorInterface()

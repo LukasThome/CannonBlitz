@@ -1,4 +1,4 @@
-from Dominio_do_problema.Campo import Campo 
+from Campo import Campo 
 
 class Jogador:
     

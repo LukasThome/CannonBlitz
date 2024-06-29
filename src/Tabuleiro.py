@@ -1,7 +1,7 @@
 
-from Dominio_do_problema.Campo import Campo
-from Dominio_do_problema.Canhao import Canhao
-from Dominio_do_problema.Jogador import Jogador  # Importe Jogador diretamente se necessário
+from Campo import Campo
+from Canhao import Canhao
+from Jogador import Jogador  # Importe Jogador diretamente se necessário
 
 #class Tabuleiro(object):
 class Tabuleiro:

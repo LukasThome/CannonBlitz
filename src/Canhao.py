@@ -57,7 +57,7 @@
 
 
 
-from Dominio_do_problema.TiroForte import TiroForte
+from TiroForte import TiroForte
 
 class Canhao:
     def __init__(self):

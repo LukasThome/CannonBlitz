@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import messagebox, Menu, simpledialog
 from dog.dog_interface import DogPlayerInterface
 from dog.dog_actor import DogActor
-from Dominio_do_problema.Tabuleiro import Tabuleiro  # Importa a classe Tabuleiro do arquivo Tabuleiro.py
+from Tabuleiro import Tabuleiro  # Importa a classe Tabuleiro do arquivo Tabuleiro.py
 
 
 class JogadorInterface(DogPlayerInterface):

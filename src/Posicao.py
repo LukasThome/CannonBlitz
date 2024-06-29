@@ -1,5 +1,5 @@
 
-from Dominio_do_problema.Campo import Campo
+from CannonBlitz.src.Campo import Campo
 
 #class Posicao(object):
 class Posicao:
