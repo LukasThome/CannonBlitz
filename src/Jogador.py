@@ -15,22 +15,21 @@ class Jogador:
 	def definir_nome(self, nome):
 		self._nome = nome
 
-	def get_nome(self):
-		return self._nome
+	# def get_nome(self):
+	# 	return self._nome
 
 	def definir_id(self, id):
 		self._id = id
-
 
 	def informar_turno(self):
 		return self._turno
 
 	def definir_jogador_vencedor(self):
-		pass
-
-	def aumentar_saldo_jogador(self, aSaldo):
-		"""@ParamType aSaldo int"""
-		pass
+		self._vencedor = True
+	
+	def aumentar_saldo_jogador(self, saldoAcrescimo):
+		self._saldo += saldoAcrescimo
+	
 
 	def saldo_suficiente(self, aSaldo_necessario):
 		return self._saldo >= aSaldo_necessario
@@ -47,11 +46,7 @@ class Jogador:
 	def set_vencedor(self):
 		self._vencedor = True
 
-
-	def definir_id(self, aId):
-		"""@ParamType aId int"""
-		pass
-
+	
 
 
     
