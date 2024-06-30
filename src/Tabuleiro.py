@@ -1,69 +1,75 @@
 
 from Campo import Campo
 from Canhao import Canhao
-from Jogador import Jogador  # Importe Jogador diretamente se necessário
+from Jogador import Jogador  
 
-#class Tabuleiro(object):
 class Tabuleiro:
 
     def __init__(self):
-        self._jogador_remoto = Jogador()
+        super().__init__()
         self._jogador_local = Jogador()
+        self._jogador_remoto = Jogador()
+        self._jogador_local.definir_nome("Jogador Local")  # Define o nome do jogador
+        self._jogador_remoto.definir_nome("Jogador Remoto")  # Define o nome do jogador
+        self._jogador_local.definir_id(1)             
+        self._jogador_remoto.definir_id(2)
+    
         self._campo_jogador_local = None
-        self._status_partida = 1
+        self._estado = 1
         self._campo_jogador_remoto = Campo()
         self._canhao_jogador_local = Campo()
         self._canhao_jogador_remoto = Canhao()
 
-        self._unnamed_JogadorInterface_ = None
-        self._unnamed_ImagemInterface_ = None
-        self._unnamed_Campo_ = []
-        self._unnamed_Jogador_ = []
-        self._unnamed_Canhao_ = []
+        # self._unnamed_JogadorInterface_ = None
+        # self._unnamed_ImagemInterface_ = None
+        # self._unnamed_Campo_ = []
+        # self._unnamed_Jogador_ = []
+        # self._unnamed_Canhao_ = []
 
     def tiro_normal(self):
         pass
 
-    def get_status_partida(self):
+    def get_estado(self):
+        return self._estado
+
+    def comecar_partida(self, Jogadores, Id_jogador_local, Jogadores2, Id_jogador_local2):
         pass
 
-    def comecar_partida(self, *aJogadores, aId_jogador_local, aJogadores2, aId_jogador_local2):
+    def set_estado(self, a):
+        self._estado = a
+        
+
+    def ocupar_posicao(self, linha, coluna):
         pass
 
-    def set_status_partida(self, aStatus):
+    def diminuir_saldo_jogador(self, saldo):
         pass
 
-    def ocupar_posicao(self, aLinha, aColuna):
+    def aumentar_saldo_jogador(self, saldo):
         pass
 
-    def diminuir_saldo_jogador(self, aSaldo):
+    def verificar_saldo_jogador(self, Jogador):
         pass
 
-    def aumentar_saldo_jogador(self, aSaldo):
+    def receber_jogada(self, A_move):
         pass
 
-    def verificar_saldo_jogador(self, aJogador):
+    def verificar_bases_colocadas_pelo_jogador(self, Bases):
         pass
 
-    def receber_jogada(self, aA_move):
+    def verificar_base_comprada(self, linha, coluna):
         pass
 
-    def verificar_bases_colocadas_pelo_jogador(self, *aBases):
+    def verificar_tiro_normal(self, linha, coluna):
         pass
 
-    def verificar_base_comprada(self, aLinha, aColuna):
+    def verificar_tiro_forte(self, linha, coluna):
         pass
 
-    def verificar_tiro_normal(self, aLinha, aColuna):
+    def verificar_tiro_preciso(self, linha, coluna):
         pass
 
-    def verificar_tiro_forte(self, aLinha, aColuna):
-        pass
-
-    def verificar_tiro_preciso(self, aLinha, aColuna):
-        pass
-
-    def verificar_jogada_vencedora(self, aCampo_jogador):
+    def verificar_jogada_vencedora(self, Campo_jogador):
         pass
 
     def definir_partida_finalizada(self):
@@ -78,7 +84,7 @@ class Tabuleiro:
     def pega_campo_jogador_remoto(self):
         pass
 
-    def identificar_posicao_atingida(self, aCampo_jogador_remoto, aPosicao_atingida):
+    def identificar_posicao_atingida(self, Campo_jogador_remoto, Posicao_atingida):
         pass
 
     def calibrar_precisao_tiro_normal(self):
@@ -96,10 +102,10 @@ class Tabuleiro:
     def verificar_numero_bases(self):
         pass
 
-    def recupera_jogador_do_tiro_disparado_atraves_id_do_adversario(self, aId_jogador_dono_campo):
+    def recupera_jogador_do_tiro_disparado_atraves_id_do_adversario(self, Id_jogador_dono_campo):
         pass
 
-    def clicar_posicao_campo(self, aLinha, aColuna):
+    def clicar_posicao_campo(self, linha, coluna):
         pass
 
     def sortear_turno(self):
@@ -111,8 +117,7 @@ class Tabuleiro:
     def inicializar(self):
         pass
 
-    def pegar_estado(self):
-        """@ReturnType Dominio do problema.Campo"""
+    def pegar_estadoCampo(self):
         pass
 
     def receber_desistencia(self):

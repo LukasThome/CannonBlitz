@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import messagebox, Menu, simpledialog
 from dog.dog_interface import DogPlayerInterface
 from dog.dog_actor import DogActor
-from Tabuleiro import Tabuleiro  # Importa a classe Tabuleiro do arquivo Tabuleiro.py
+from Tabuleiro import Tabuleiro 
 
 
 class JogadorInterface(DogPlayerInterface):
@@ -11,17 +11,13 @@ class JogadorInterface(DogPlayerInterface):
         self.janela_principal = Tk()
         self.desenhar_janela_principal()
         self.tabuleiro = Tabuleiro()  
-        nome_jogador = simpledialog.askstring(title="Identificador do Jogador", prompt="Qual o seu nome?")
+        player_name = simpledialog.askstring(title="Identificação do jogador", prompt="Qual o seu nome?")
         self.dog_server_interface = DogActor()
-        message = self.dog_server_interface.initialize(nome_jogador, self)
-        messagebox.showinfo(message=message)
-        # self.barra_menu = Menu()
-        # self.arquivo_menu = Menu()
+        message = self.dog_server_interface.initialize(player_name, self)
+        messagebox.showinfo(message=message) #mostra mensagem de conexão com o servidor
         self.janela_principal.mainloop() 
     
-    def atualizar_interface(self):
-        pass
-
+    
     def desenhar_janela_principal(self):
         # Tabuleiros
         frame1 = Frame(self.janela_principal)
@@ -37,8 +33,6 @@ class JogadorInterface(DogPlayerInterface):
             self.board1.append(row_buttons)
 
         Label(self.janela_principal, text="Cannon Blitz").grid(row=1, column=0)
-        
-        
         
         frame2 = Frame(self.janela_principal)
         frame2.grid(row=2, column=0, padx=3, pady=3)
@@ -56,7 +50,7 @@ class JogadorInterface(DogPlayerInterface):
         control_frame = Frame(self.janela_principal)
         control_frame.grid(row=0, column=1, rowspan=3, padx=10, pady=10)
 
-        self.saldo_label = Label(control_frame, text="Saldo: 0")
+        self.saldo_label = Label(control_frame, text="Saldo: 0") #Deixar dinamico
         self.saldo_label.grid(row=0, column=0, padx=3, pady=3)
 
         self.comprar_base_button = Button(control_frame, text="Comprar Base $2", command=self.comprar_base, state=ACTIVE)
@@ -78,47 +72,24 @@ class JogadorInterface(DogPlayerInterface):
         self.game_menu = Menu(self.menu)
         self.menu.add_cascade(label="Menu", menu=self.game_menu)
         self.game_menu.add_command(label="Iniciar Partida", command=self.iniciar_partida)
-   
-    def button_click(self, row, col, player):
-        # Placeholder function for button clicks
+
+
+    def iniciar_partida(self):
+        status_inicio = self.dog_server_interface.start_match(2) # Inicia a partida com 2 jogadores
+        message = status_inicio.get_message() # Mensagem de início da partida
+        messagebox.showinfo(message=message) # Mostra a mensagem de início da partida
+
+    def receber_inicio(self, status_inicio):
+        message = status_inicio.get_message()
+        messagebox.showinfo(message=message)
+        
+    def atualizar_interface(self):
         pass
 
     def tiro_normal(self):
         pass
 
-    def receber_inicio(self, aStatus_inicio):
-        pass
-
-    def iniciar_partida(self):
-        start_status = self.dog_server_interface.start_match(2)
-        message = start_status.get_message()
-        messagebox.showinfo(message=message)
-
-    def receive_start(self, aStart_status):
-        pass
-
-    def receive_move(self, aA_move):
-        pass
-
-    def receive_withdrawal_notification(self):
-        pass
-
-    def request_player_name(self):
-        pass
-
-    def notify_result(self, aMessage):
-        pass
-
-    def proceed_start(self, *aPlayers, aLocal_player_id):
-        pass
-
-    def atualizar_interface(self, aStatus):
-        pass
-
-    def operation(self):
-        pass
-
-    def pegar_posicao_campo(self, aLinha, aColuna):
+    def pegar_posicao_campo(self, linha, coluna):
         pass
 
     def comecar_partida(self):
@@ -136,9 +107,9 @@ class JogadorInterface(DogPlayerInterface):
     def colocar_bases(self):
         pass
 
-    def clicar_posicao_campo(self, aLinha, aColuna):
-        pass
+    # def clicar_posicao_campo(self, aLinha, aColuna):
+    #     pass
 
-    def receber_desistencia(self):
-        pass
+    # def receber_desistencia(self):
+    #     pass
 

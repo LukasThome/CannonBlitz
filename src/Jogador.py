@@ -1,10 +1,29 @@
-from Campo import Campo 
 
 class Jogador:
     
+	def __init__(self):
+		self._nome = None
+		self._vencedor = False
+		self._turno = False
+		self._saldo = 0
+		self._id = None
+		self._preencheu_bases = False
+		
+  		# self._unnamed_Tabuleiro_ = None
+		# self._unnamed_Campo_ = None
+
+	def definir_nome(self, nome):
+		self._nome = nome
+
+	def get_nome(self):
+		return self._nome
+
+	def definir_id(self, id):
+		self._id = id
+
+
 	def informar_turno(self):
-		"""@ReturnType boolean"""
-		pass
+		return self._turno
 
 	def definir_jogador_vencedor(self):
 		pass
@@ -14,52 +33,25 @@ class Jogador:
 		pass
 
 	def saldo_suficiente(self, aSaldo_necessario):
-		"""@ParamType aSaldo_necessario int
-		@ReturnType boolean"""
-		pass
+		return self._saldo >= aSaldo_necessario
 
-	def diminuir_saldo(self, aSaldo):
-		"""@ParamType aSaldo int"""
-		pass
+	def diminuir_saldo(self, saldoDecremento):
+		self. _saldo -= saldoDecremento
 
 	def get_saldo(self):
-		"""@ReturnType int"""
-		pass
+		return self._saldo
 
-	def set_turno(self):
-		"""@ReturnType boolean"""
-		pass
-
+	def set_turno(self, aTurno):
+		self._turno = aTurno
+		
 	def set_vencedor(self):
-		"""@ReturnType boolean"""
-		pass
+		self._vencedor = True
 
-	def definir_nome(self, aNome):
-		"""@ParamType aNome string"""
-		pass
 
 	def definir_id(self, aId):
 		"""@ParamType aId int"""
 		pass
 
-	def __init__(self):
-		self._nome = None
-		"""@AttributeType string"""
-		self._vencedor = False
-		"""@AttributeType boolean"""
-		self._turno = False
-		"""@AttributeType boolean"""
-		self._saldo = 0
-		"""@AttributeType int"""
-		self._id = None
-		"""@AttributeType int"""
-		self._preencheu_bases = False
-		"""@AttributeType boolean"""
-		self._unnamed_Tabuleiro_ = None
-		"""@AttributeType Dominio do problema.Tabuleiro
-		# @AssociationType Dominio do problema.Tabuleiro"""
-		self._unnamed_Campo_ = None
-		"""@AttributeType Dominio do problema.Campo
-		# @AssociationType Dominio do problema.Campo
-		# @AssociationMultiplicity 1"""
 
+
+    
