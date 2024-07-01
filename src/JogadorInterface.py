@@ -92,6 +92,13 @@ class JogadorInterface(DogPlayerInterface):
         else:
             messagebox.showinfo(message="Voce ja esta em uma partida")
 
+    #na teoria receber_inicio
+    def receive_start(self, start_status):
+        # self.iniciar_partida()
+        jogadores = start_status.get_players()
+        jogador_local_id = start_status.get_local_id()
+        self.tabuleiro.comecar_partida(jogadores, jogador_local_id)
+        self.atualizar_interface()
 
     def comprar_base(self):
         pass

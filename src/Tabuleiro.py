@@ -29,7 +29,7 @@ class Tabuleiro:
         pass
 
     def get_estado(self):
-        return self._estado
+        return self.estado
 
     def comecar_partida(self, jogadores, id_jogador_local):
         jogador_local_name = jogadores[0][0]
@@ -44,7 +44,7 @@ class Tabuleiro:
         self.set_estado(2)  
 
     def set_estado(self, a):
-        self._estado = a
+        self.estado = a
         
 
     def ocupar_posicao(self, linha, coluna):
