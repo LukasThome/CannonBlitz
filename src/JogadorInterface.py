@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox, Menu, simpledialog
 from dog.dog_interface import DogPlayerInterface
 from dog.dog_actor import DogActor
+from dog.start_status import StartStatus
 from Tabuleiro import Tabuleiro
 
 class JogadorInterface(DogPlayerInterface):
@@ -17,39 +18,12 @@ class JogadorInterface(DogPlayerInterface):
         self.janela_principal.mainloop()
 
     def desenhar_janela_principal(self):
-        # Tabuleiro 1
-        frame1 = Frame(self.janela_principal)
-        frame1.grid(row=0, column=0, padx=10, pady=10)
-        self.board1 = []
-        
-        for i in range(3):
-            row_buttons = []
-            for j in range(5):
-                button = Button(frame1, width=5, height=2, command=lambda i=i, j=j: self.clicar_posicao_campo(i, j))
-                button.grid(row=i, column=j, padx=1, pady=1)
-                row_buttons.append(button)
-            self.board1.append(row_buttons)
-
-        Label(self.janela_principal, text="Cannon Blitz").grid(row=1, column=0)
-
-        # Tabuleiro 2
-        frame2 = Frame(self.janela_principal)
-        frame2.grid(row=2, column=0, padx=3, pady=3)
-        self.board2 = []
-        
-        for i in range(3):
-            row_buttons = []
-            for j in range(5):
-                button = Button(frame2, width=5, height=2, command=lambda i=i, j=j: self.clicar_posicao_campo(i, j))
-                button.grid(row=i, column=j, padx=1, pady=1)
-                row_buttons.append(button)
-            self.board2.append(row_buttons)
-
         # Painel de Controle
+        Label(self.janela_principal, text="Cannon Blitz").grid(row=1, column=0)
         control_frame = Frame(self.janela_principal)
         control_frame.grid(row=0, column=1, rowspan=3, padx=10, pady=10)
 
-        self.saldo_label = Label(control_frame, text="Saldo: 0")  # Deixar dinâmico
+        self.saldo_label = Label(control_frame, text="Saldo: 0")  # Deixar saldo dinâmico
         self.saldo_label.grid(row=0, column=0, padx=3, pady=3)
 
         self.comprar_base_button = Button(control_frame, text="Comprar Base $2", command=self.comprar_base, state=ACTIVE)
@@ -71,6 +45,31 @@ class JogadorInterface(DogPlayerInterface):
         self.menu.add_cascade(label="Menu", menu=self.game_menu)
         self.game_menu.add_command(label="Iniciar Partida", command=self.iniciar_partida)
 
+        # campo jogador local
+        campo_jogador_local = Frame(self.janela_principal)
+        campo_jogador_local.grid(row=0, column=0, padx=10, pady=10)
+        self.board1 = []
+        
+        for i in range(3):
+            row_buttons = []
+            for j in range(5):
+                button = Button(campo_jogador_local, width=5, height=2, command=lambda i=i, j=j: self.clicar_posicao_campo(i, j))
+                button.grid(row=i, column=j, padx=1, pady=1)
+                row_buttons.append(button)
+            self.board1.append(row_buttons)
+        # campo 2
+        campo_jogador_remoto = Frame(self.janela_principal)
+        campo_jogador_remoto.grid(row=2, column=0, padx=3, pady=3)
+        self.board2 = []
+        
+        for i in range(3):
+            row_buttons = []
+            for j in range(5):
+                button = Button(campo_jogador_remoto, width=5, height=2, command=lambda i=i, j=j: self.clicar_posicao_campo(i, j))
+                button.grid(row=i, column=j, padx=1, pady=1)
+                row_buttons.append(button)
+            self.board2.append(row_buttons)
+
     def clicar_posicao_campo(self, linha, coluna):
         """
         Captura e processa um clique no tabuleiro em uma posição específica.
@@ -84,9 +83,15 @@ class JogadorInterface(DogPlayerInterface):
 
     # Definição de funções adicionais para manipulação de eventos
     def iniciar_partida(self):
-        status_inicio = self.dog_server_interface.start_match(2)  # Inicia a partida com 2 jogadores
-        message = status_inicio.get_message()  # Mensagem de início da partida
-        messagebox.showinfo(message=message)  # Mostra a mensagem de início da partida
+        if self.tabuleiro.estado == 1:
+            status_inicio = self.dog_server_interface.start_match(2)  # Inicia a partida com 2 jogadores
+            message = status_inicio.get_message()  # Mensagem de início da partida
+            messagebox.showinfo(message=message)  # Mostra a mensagem de início da partida
+            self.tabuleiro.comecar_partida(status_inicio.get_players(), status_inicio.get_local_id())
+            self.atualizar_interface()
+        else:
+            messagebox.showinfo(message="Voce ja esta em uma partida")
+
 
     def comprar_base(self):
         pass
@@ -101,5 +106,5 @@ class JogadorInterface(DogPlayerInterface):
         pass
 
     # Outras funções que podem ser implementadas conforme necessário
-    # def atualizar_interface(self):
-    #     pass
+    def atualizar_interface(self):
+        pass

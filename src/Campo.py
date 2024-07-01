@@ -1,60 +1,47 @@
-
-#from Dominio_do_problema.Tabuleiro import Tabuleiro
-#from Dominio_do_problema.Posicao import Posicao
-#from Dominio_do_problema.Jogador import Jogador
-
-#class Campo(object):
+from Posicao import Posicao
+from Jogador import Jogador
 
 class Campo:
-	def campo_tem_base(self):
-		"""@ReturnType boolean"""
-		pass
+    def __init__(self,id):
+        self._id_jogador = id
+        """@AttributeType int"""
+        self.posicoes = []
+        for y in range(3):
+            column = []
+            for x in range(5):
+                column.append(Posicao(y, x,False))
+            self.posicoes.append(column)
 
-	def remover_base_atingida(self, aLinha, aColuna):
-		"""@ParamType aLinha int
-		@ParamType aColuna int
-		@ReturnType void"""
-		pass
+    def campo_tem_base(self):
+        """@ReturnType boolean"""
+        pass
 
-	def obter_posicoes_com_base(self):
-		"""@ReturnType <"""
-		pass
+    def remover_base_atingida(self, aLinha, aColuna):
+        """@ParamType aLinha int
+        @ParamType aColuna int
+        @ReturnType void"""
+        pass
 
-	def posicao_tem_base(self, aLinha, aColuna):
-		"""@ParamType aLinha int
-		@ParamType aColuna int
-		@ReturnType boolean"""
-		pass
+    def obter_posicoes_com_base(self):
+        """@ReturnType <"""
+        pass
 
-	def recupera_id_jogador(self):
-		"""@ReturnType int"""
-		pass
+    def posicao_tem_base(self, aLinha, aColuna):
+        """@ParamType aLinha int
+        @ParamType aColuna int
+        @ReturnType boolean"""
+        pass
 
-	def pega_posicao(self, aLinha, aColuna):
-		"""@ParamType aLinha int
-		@ParamType aColuna int
-		@ReturnType Dominio do problema.Posicao"""
-		pass
+    def recupera_id_jogador(self):
+        """@ReturnType int"""
+        pass
 
-	def pega_quantidade_bases(self):
-		"""@ReturnType int"""
-		pass
+    def pega_posicao(self, aLinha, aColuna):
+        """@ParamType aLinha int
+        @ParamType aColuna int
+        @ReturnType Dominio do problema.Posicao"""
+        pass
 
-	def __init__(self):
-		self._posicoes = None
-		"""@AttributeType posicao"""
-		self._id_jogador = None
-		"""@AttributeType int"""
-		self._unnamed_Tabuleiro_ = None
-		"""@AttributeType Dominio do problema.Tabuleiro
-		# @AssociationType Dominio do problema.Tabuleiro"""
-		self._unnamed_Posicao_ = []
-		"""@AttributeType Dominio do problema.Posicao*
-		# @AssociationType Dominio do problema.Posicao[]
-		# @AssociationMultiplicity 15
-		# @AssociationKind Composition"""
-		self._unnamed_Jogador_ = None
-		"""@AttributeType Dominio do problema.Jogador
-		# @AssociationType Dominio do problema.Jogador
-		# @AssociationMultiplicity 1"""
-
+    def pega_quantidade_bases(self):
+        """@ReturnType int"""
+        pass

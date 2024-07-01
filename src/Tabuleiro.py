@@ -7,18 +7,17 @@ class Tabuleiro:
 
     def __init__(self):
         super().__init__()
-        self._jogador_local = Jogador()
-        self._jogador_remoto = Jogador()
-        self._jogador_local.definir_nome("Jogador Local")  # Define o nome do jogador
-        self._jogador_remoto.definir_nome("Jogador Remoto")  # Define o nome do jogador
-        self._jogador_local.definir_id(1)             
-        self._jogador_remoto.definir_id(2)
-    
-        self._campo_jogador_local = None
-        self._estado = 1
-        self._campo_jogador_remoto = Campo()
-        self._canhao_jogador_local = Campo()
-        self._canhao_jogador_remoto = Canhao()
+        self.jogador_local = Jogador()
+        self.jogador_remoto = Jogador()
+        self.jogador_local.definir_nome("Jogador Local")  # Define o nome do jogador
+        self.jogador_remoto.definir_nome("Jogador Remoto")  # Define o nome do jogador
+        self.jogador_local.definir_id(1)         
+        self.jogador_remoto.definir_id(2)
+        self.estado = 1
+        self.campo_jogador_local = Campo(1)
+        self.campo_jogador_remoto = Campo(2)
+        self.canhao_jogador_local = Canhao()
+        self.canhao_jogador_remoto = Canhao()
 
         # self._unnamed_JogadorInterface_ = None
         # self._unnamed_ImagemInterface_ = None
@@ -32,8 +31,17 @@ class Tabuleiro:
     def get_estado(self):
         return self._estado
 
-    def comecar_partida(self, Jogadores, Id_jogador_local, Jogadores2, Id_jogador_local2):
-        pass
+    def comecar_partida(self, jogadores, id_jogador_local):
+        jogador_local_name = jogadores[0][0]
+        jogador_local_id = jogadores[0][1]
+        jogador_local_order = jogadores[0][2]
+        jogador_remoto_name = jogadores[1][0]
+        jogador_remoto_id = jogadores[1][1]
+        if jogador_local_order == "1":
+            self.jogador_local.set_turno(True)
+        else:
+            self.jogador_remoto.set_turno(False)
+        self.set_estado(2)  
 
     def set_estado(self, a):
         self._estado = a
