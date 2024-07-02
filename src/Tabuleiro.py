@@ -140,7 +140,7 @@ class Tabuleiro:
             }
 
     def verificar_partida_andamento(self):
-        return self.estado == 1     #Mudar para 3 no release
+        return self.estado == 3     #Mudar para 3 no release
 
     def pega_campo_jogador_remoto(self):
         pass
