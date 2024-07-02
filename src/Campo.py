@@ -3,12 +3,8 @@ from Posicao import Posicao
 class Campo:
     def __init__(self, id_jogador):
         self._id_jogador = id_jogador
-        self.posicoes = []
-        for y in range(3):
-            column = []
-            for x in range(5):
-                column.append(Posicao(y, x, False))
-            self.posicoes.append(column)
+        self.posicoes = [[Posicao(y, x, False) for x in range(5)] for y in range(3)]
+        self.bases = []
 
     def campo_tem_base(self):
         for linha in self.posicoes:
@@ -38,15 +34,18 @@ class Campo:
         return self.posicoes[linha][coluna]
 
     def pega_quantidade_bases(self):
-        quantidade = 0
-        for linha in self.posicoes:
-            for posicao in linha:
-                if posicao.get_defesa():
-                    quantidade += 1
-        return quantidade
+        return len(self.bases)
 
     def adicionar_base(self, linha, coluna):
-        self.posicoes[linha][coluna].set_defesa(True)
+        if not self.posicao_tem_base(linha, coluna):
+            self.posicoes[linha][coluna].set_defesa(True)
+            self.bases.append((linha, coluna))
+            print(f"Base adicionada na posição ({linha}, {coluna}) para o jogador {self._id_jogador}")
+            print(f"Estado atual das bases: {self.obter_posicoes_com_base()}")
 
     def remover_base(self, linha, coluna):
-        self.posicoes[linha][coluna].set_defesa(False)
+        if self.posicao_tem_base(linha, coluna):
+            self.posicoes[linha][coluna].set_defesa(False)
+            self.bases.remove((linha, coluna))
+            print(f"Base removida na posição ({linha}, {coluna}) para o jogador {self._id_jogador}")
+            print(f"Estado atual das bases: {self.obter_posicoes_com_base()}")

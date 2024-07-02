@@ -58,16 +58,16 @@ class Tabuleiro:
         return self.estado
 
     def comecar_partida(self, jogadores, id_jogador_local):
-        jogador_local_name = jogadores[0][0]
-        jogador_local_id = jogadores[0][1]
-        jogador_local_order = jogadores[0][2]
-        jogador_remoto_name = jogadores[1][0]
-        jogador_remoto_id = jogadores[1][1]
-        if jogador_local_order == "1":
+        self.jogador_local.definir_nome(jogadores[0][0])
+        self.jogador_local.definir_id(jogadores[0][1])
+        self.jogador_remoto.definir_nome(jogadores[1][0])
+        self.jogador_remoto.definir_id(jogadores[1][1])
+        if jogadores[0][1] == id_jogador_local:
             self.jogador_local.set_turno(True)
-        else:
             self.jogador_remoto.set_turno(False)
-        self.set_estado(2)  
+        else:
+            self.jogador_local.set_turno(False)
+            self.jogador_remoto.set_turno(True)
 
     def set_estado(self, a):
         self.estado = a
@@ -79,6 +79,17 @@ class Tabuleiro:
         self.campo_jogador_local.adicionar_base(linha, coluna)
 
 
+    #ADICIONAR NO DIAGRAMA
+    def verificar_bases_colocadas(self):
+        return len(self.campo_jogador_local.obter_posicoes_com_base()) >= 5
+
+    def adicionar_base(self, linha, coluna):
+        if self.estado == 2:  # Verificar se o estado da partida é 2 (preparação)
+            self.campo_jogador_local.adicionar_base(linha, coluna)
+            if self.verificar_bases_colocadas():
+                self.estado = 3  # Atualizar estado para 3 (em andame
+        
+    
     def diminuir_saldo_jogador(self, saldo):
         self.jogador_local.diminuir_saldo(saldo)
 
@@ -92,7 +103,7 @@ class Tabuleiro:
         pass
 
     def verificar_bases_colocadas_pelo_jogador(self, Bases):#implementar
-        pass
+        return len(self.campo_jogador_local.obter_posicoes_com_base()) >= 5
 
     def verificar_base_comprada(self, linha, coluna):#implementar
         pass
@@ -112,8 +123,10 @@ class Tabuleiro:
     def definir_partida_finalizada(self): ##implementar
         pass
 
-    def gerar_item_jogada(self): #Nao sei se é necessario
-        pass
+    def gerar_item_jogada(self):
+        # Implemente a lógica para gerar a jogada aqui
+        jogada = {"tipo": "movimento", "detalhes": "detalhes_da_jogada"}
+        return jogada
 
     def verificar_partida_andamento(self):
         return self.estado == 1     #Mudar para 3 no release

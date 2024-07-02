@@ -1,8 +1,9 @@
+
 class Posicao:
-    def __init__(self, linha, coluna, defesa):
+    def __init__(self, linha, coluna, defesa=False):
+        self.defesa = defesa
         self.linha = linha
         self.coluna = coluna
-        self.defesa = defesa
 
     def get_defesa(self):
         return self.defesa

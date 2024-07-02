@@ -82,42 +82,85 @@ class JogadorInterface(DogPlayerInterface):
                 row_buttons.append(button)
             self.board1.append(row_buttons)
 
+        self.mensagem_label = Label(self.janela_principal, text="", fg="red")
+        self.mensagem_label.grid(row=3, column=0, padx=3, pady=3)
 
-
+    
     def clicar_posicao_campo(self, linha, coluna):
-        """
-        Captura e processa um clique no tabuleiro em uma posição específica.
+        print(f"Clique registrado na linha {linha}, coluna {coluna}")
 
-        Args:
-        linha (int): Linha onde o clique ocorreu.
-        coluna (int): Coluna onde o clique ocorreu.
-        """
-        mensagem = f"Clique registrado na linha {linha}, coluna {coluna}"
-        print(mensagem)  # Isso pode ser substituído ou complementado por qualquer ação necessária
+        estado_partida = self.tabuleiro.get_estado()
 
+        if estado_partida not in [2, 3]:
+            self.mensagem_label.config(text="Aguardando início da partida")
+            return
+
+        if not self.tabuleiro.jogador_local.informar_turno():
+            self.mensagem_label.config(text="Não é seu turno")
+            return
+
+        if self.tabuleiro.campo_jogador_local.posicao_tem_base(linha, coluna):
+            self.mensagem_label.config(text="Posição ocupada")
+            print(f"A posição ({linha}, {coluna}) já está ocupada.")
+            return
+
+        self.tabuleiro.campo_jogador_local.adicionar_base(linha, coluna)
+        print(f"Base adicionada na posição ({linha}, {coluna}) pelo jogador local")
+        print(f"Bases ocupadas: {self.tabuleiro.campo_jogador_local.obter_posicoes_com_base()}")
+        print(f"Quantidade de bases: {self.tabuleiro.campo_jogador_local.pega_quantidade_bases()}")
+        print(f"Informações do jogador local: {vars(self.tabuleiro.jogador_local)}")
+        print(f"Informações do jogador remoto: {vars(self.tabuleiro.jogador_remoto)}")
+        print(f"Estado da partida: {self.tabuleiro.get_estado()}")
+        self.atualizar_interface()
+
+        if estado_partida == 2:
+            if self.tabuleiro.campo_jogador_local.pega_quantidade_bases() == 5:
+                self.tabuleiro.jogador_local.preencheu_bases = True
+                if self.tabuleiro.jogador_local.preencheu_bases and self.tabuleiro.jogador_remoto.preencheu_bases:
+                    self.tabuleiro.set_estado(3)
+                    self.mensagem_label.config(text="Estado da partida atualizado para 'em andamento'")
+                else:
+                    self.mensagem_label.config(text="Você adicionou todas as suas bases. Aguarde o outro jogador.")
+            else:
+                self.mensagem_label.config(text="Continue até adicionar 5 bases")
+        elif estado_partida == 3:
+            # Enviar jogada para o DOG (adapte conforme necessário)
+            move_to_send = self.tabuleiro.gerar_item_jogada()
+            self.dog_server_interface.send_move(move_to_send)
+            self.mensagem_label.config(text="Jogada enviada")
+
+
+
+
+    
     # Definição de funções adicionais para manipulação de eventos
     def iniciar_partida(self):
         if self.tabuleiro.estado == 1:
             status_inicio = self.dog_server_interface.start_match(2)  # Inicia a partida com 2 jogadores
             message = status_inicio.get_message()  # Mensagem de início da partida
-            messagebox.showinfo(message=message)  # Mostra a mensagem de início da partida
+            self.mensagem_label.config(text=message)  # Exibe a mensagem de início da partida
             self.tabuleiro.comecar_partida(status_inicio.get_players(), status_inicio.get_local_id())
+            self.tabuleiro.set_estado(2)  # Define o estado da partida como 2 (preparação)
             self.atualizar_interface()
         else:
-            messagebox.showinfo(message="Voce ja esta em uma partida")
+            self.mensagem_label.config(text="Você já está em uma partida")
 
-    #na teoria receber_inicio
-    def receive_start(self, start_status):
-        # self.iniciar_partida()
+
+        
+    def receber_inicio(self, start_status):
         jogadores = start_status.get_players()
         jogador_local_id = start_status.get_local_id()
         self.tabuleiro.comecar_partida(jogadores, jogador_local_id)
+        self.tabuleiro.set_estado(2)  # Define o estado da partida como 2 (preparação)
+        message = start_status.get_message()
+        self.mensagem_label.config(text=message)
         self.atualizar_interface()
+
 
     def comprar_base(self):
         print("Botão Comprar Base clicado")  # Log do clique no console
         mensagem = self.tabuleiro.comprar_base()
-        messagebox.showinfo(message=mensagem)
+        self.mensagem_label.config(text=mensagem)
         self.atualizar_interface()
 
     def tiro_preciso(self):
@@ -127,7 +170,7 @@ class JogadorInterface(DogPlayerInterface):
     def tiro_normal(self):
         print("Botão Tiro Normal clicado")  # Log do clique no console
         mensagem = self.tabuleiro.tiro_normal()
-        messagebox.showinfo(message=mensagem)
+        self.mensagem_label.config(text=mensagem)
         self.atualizar_interface()
 
     def tiro_forte(self):
