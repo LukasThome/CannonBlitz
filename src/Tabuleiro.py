@@ -22,12 +22,45 @@ class Tabuleiro:
         self.canhao_jogador_remoto = Canhao()
 
 
+    # def tiro_normal(self):
+    #     print("Método tiro_normal do Tabuleiro foi chamado")
+    #     mensagem = ""
+    #     if not self.verificar_partida_andamento():
+    #         mensagem = "A partida deve estar em andamento"
+    #     elif not self.informar_turno():  # Ajuste para usar o método correto
+    #         mensagem = "Não é seu turno"
+    #     else:
+    #         # Identificar a posição que o tiro acertou
+    #         linha, coluna = self.canhao_jogador_local.tiro_normal(self.campo_jogador_remoto)
+    #         print(f"Posição atingida: ({linha}, {coluna})")
+
+    #         # Verificar se a posição tem uma base
+    #         if not self.campo_jogador_remoto.posicao_tem_base(linha, coluna):
+    #             # Calibrar precisão
+    #             self.canhao_jogador_local.calibrar_precisao()
+    #             mensagem = "Você não acertou nenhuma base."
+    #         else:
+    #             # Destruir a base do adversário
+    #             self.campo_jogador_remoto.remover_base(linha, coluna)
+    #             # Aumentar o saldo do jogador
+    #             self.jogador_local.aumentar_saldo_jogador(1)
+    #             # Resetar precisão
+    #             self.canhao_jogador_local.resetar_precisao_tiro_normal()
+    #             mensagem = "Você destruiu uma base adversária!"
+
+    #         # Verificar jogada vencedora
+    #         if self.verificar_jogada_vencedora(self.campo_jogador_remoto):
+    #             mensagem += " Você venceu o jogo!"
+
+    #     return mensagem
+
+
     def tiro_normal(self):
         print("Método tiro_normal do Tabuleiro foi chamado")
         mensagem = ""
         if not self.verificar_partida_andamento():
             mensagem = "A partida deve estar em andamento"
-        elif not self.informar_turno():  # Ajuste para usar o método correto
+        elif not self.jogador_local.informar_turno():
             mensagem = "Não é seu turno"
         else:
             # Identificar a posição que o tiro acertou
@@ -52,7 +85,12 @@ class Tabuleiro:
             if self.verificar_jogada_vencedora(self.campo_jogador_remoto):
                 mensagem += " Você venceu o jogo!"
 
+            # Trocar turno
+            self.trocar_turno()
+
         return mensagem
+
+
 
     def get_estado(self):
         return self.estado
@@ -132,7 +170,7 @@ class Tabuleiro:
     def definir_partida_finalizada(self): ##implementar
         pass
 
-        def gerar_item_jogada(self):
+    def gerar_item_jogada(self):
             return {
                 'type': 'move',
                 'player_id': self.jogador_local.id,
@@ -208,3 +246,13 @@ class Tabuleiro:
 
     def saldo_suficiente(self, valor):
         return self.jogador_local.saldo_suficiente(valor)
+    
+    
+    def trocar_turno(self):
+        if self.jogador_local.informar_turno():
+            self.jogador_local.set_turno(False)
+            self.jogador_remoto.set_turno(True)
+        else:
+            self.jogador_local.set_turno(True)
+            self.jogador_remoto.set_turno(False)
+        print(f"Turno trocado. Turno do jogador local: {self.jogador_local.informar_turno()}, Turno do jogador remoto: {self.jogador_remoto.informar_turno()}")
