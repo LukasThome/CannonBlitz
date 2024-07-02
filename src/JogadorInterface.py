@@ -14,17 +14,13 @@ class JogadorInterface(DogPlayerInterface):
         self.tabuleiro = Tabuleiro()
         self.desenhar_janela_principal()
 
-       
         player_name = simpledialog.askstring(title="Identificação do jogador", prompt="Qual o seu nome?")
         self.dog_server_interface = DogActor()
         message = self.dog_server_interface.initialize(player_name, self)
         messagebox.showinfo(message=message)  # Mostra mensagem de conexão com o servidor
-        
-        
+
         self.janela_principal.mainloop()
         self.atualizar_interface()  # Atualiza a interface com o saldo inicial
-
-        
 
     def desenhar_janela_principal(self):
         # Painel de Controle
@@ -85,7 +81,6 @@ class JogadorInterface(DogPlayerInterface):
         self.mensagem_label = Label(self.janela_principal, text="", fg="red")
         self.mensagem_label.grid(row=3, column=0, padx=3, pady=3)
 
-    
     def clicar_posicao_campo(self, linha, coluna):
         print(f"Clique registrado na linha {linha}, coluna {coluna}")
 
@@ -129,34 +124,62 @@ class JogadorInterface(DogPlayerInterface):
             self.dog_server_interface.send_move(move_to_send)
             self.mensagem_label.config(text="Jogada enviada")
 
-
-
-
-    
     # Definição de funções adicionais para manipulação de eventos
     def iniciar_partida(self):
         if self.tabuleiro.estado == 1:
             status_inicio = self.dog_server_interface.start_match(2)  # Inicia a partida com 2 jogadores
-            message = status_inicio.get_message()  # Mensagem de início da partida
-            self.mensagem_label.config(text=message)  # Exibe a mensagem de início da partida
-            self.tabuleiro.comecar_partida(status_inicio.get_players(), status_inicio.get_local_id())
-            self.tabuleiro.set_estado(2)  # Define o estado da partida como 2 (preparação)
-            self.atualizar_interface()
+            if status_inicio.get_code() == "2":
+                jogadores = status_inicio.get_players()
+                if len(jogadores) >= 2:
+                    message = status_inicio.get_message()  # Mensagem de início da partida
+                    self.mensagem_label.config(text=message)  # Exibe a mensagem de início da partida
+                    self.tabuleiro.comecar_partida(jogadores, status_inicio.get_local_id())
+                    self.tabuleiro.set_estado(2)  # Define o estado da partida como 2 (preparação)
+                    self.atualizar_interface()
+                else:
+                    self.mensagem_label.config(text="Erro: jogadores insuficientes")
+            else:
+                self.mensagem_label.config(text="Erro ao iniciar partida: " + status_inicio.get_message())
         else:
             self.mensagem_label.config(text="Você já está em uma partida")
 
 
-        
-    def receber_inicio(self, start_status):
+    # def receber_inicio(self, start_status):
+    #     jogadores = start_status.get_players()
+    #     if len(jogadores) >= 2:
+    #         jogador_local_id = start_status.get_local_id()
+    #         self.tabuleiro.comecar_partida(jogadores, jogador_local_id)
+    #         self.tabuleiro.set_estado(2)  # Define o estado da partida como 2 (preparação)
+    #         message = start_status.get_message()
+    #         self.mensagem_label.config(text=message)
+    #         self.atualizar_interface()
+    #     else:
+    #         self.mensagem_label.config(text="Erro: jogadores insuficientes")
+    
+    
+    def receive_start(self, start_status):
         jogadores = start_status.get_players()
-        jogador_local_id = start_status.get_local_id()
-        self.tabuleiro.comecar_partida(jogadores, jogador_local_id)
-        self.tabuleiro.set_estado(2)  # Define o estado da partida como 2 (preparação)
-        message = start_status.get_message()
-        self.mensagem_label.config(text=message)
+        if len(jogadores) >= 2:
+            jogador_local_id = start_status.get_local_id()
+            self.tabuleiro.comecar_partida(jogadores, jogador_local_id)
+            self.tabuleiro.set_estado(2)  # Define o estado da partida como 2 (preparação)
+            message = start_status.get_message()
+            self.mensagem_label.config(text=message)
+            self.atualizar_interface()
+        else:
+            self.mensagem_label.config(text="Erro: jogadores insuficientes")
+        
+        
+    
+    def receive_move(self, a_move):
+        self.tabuleiro.receber_jogada(a_move)
         self.atualizar_interface()
 
-
+    def receive_withdrawal_notification(self):
+        self.tabuleiro.receber_desistencia()
+        self.mensagem_label.config(text="Seu oponente desistiu!")
+        self.atualizar_interface()
+     
     def comprar_base(self):
         print("Botão Comprar Base clicado")  # Log do clique no console
         mensagem = self.tabuleiro.comprar_base()
@@ -165,7 +188,6 @@ class JogadorInterface(DogPlayerInterface):
 
     def tiro_preciso(self):
         print("Botão Tiro Preciso clicado")  # Log do clique no console
-
 
     def tiro_normal(self):
         print("Botão Tiro Normal clicado")  # Log do clique no console
@@ -180,5 +202,3 @@ class JogadorInterface(DogPlayerInterface):
     # Outras funções que podem ser implementadas conforme necessário
     def atualizar_interface(self):
         self.saldo_label.config(text=f"Saldo: {self.tabuleiro.jogador_local.get_saldo()}")
-
-        

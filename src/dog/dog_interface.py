@@ -3,7 +3,7 @@ class DogPlayerInterface:
         super().__init__()
         self.dog_server_interface = None
 
-    def receive_start(self, start_status):
+    def recieve_start(self, start_status):
         print("O método receive_start() precisa ser sobrescrito")
 
     def receive_move(self, a_move):
