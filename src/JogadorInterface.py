@@ -16,6 +16,9 @@ class JogadorInterface(DogPlayerInterface):
         message = self.dog_server_interface.initialize(player_name, self)
         messagebox.showinfo(message=message)  # Mostra mensagem de conexão com o servidor
         self.janela_principal.mainloop()
+        self.atualizar_interface()  # Atualiza a interface com o saldo inicial
+
+        
 
     def desenhar_janela_principal(self):
         # Painel de Controle
@@ -101,16 +104,24 @@ class JogadorInterface(DogPlayerInterface):
         self.atualizar_interface()
 
     def comprar_base(self):
-        pass
+        print("Botão Comprar Base clicado")  # Log do clique no console
+        mensagem = self.tabuleiro.comprar_base()
+        messagebox.showinfo(message=mensagem)
+        self.atualizar_interface()
 
     def tiro_preciso(self):
-        pass
+        print("Botão Tiro Preciso clicado")  # Log do clique no console
+
 
     def tiro_normal(self):
-        pass
+        print("Botão Tiro Normal clicado")  # Log do clique no console
+        mensagem = self.tabuleiro.tiro_normal()
+        messagebox.showinfo(message=mensagem)
+        self.atualizar_interface()
 
     def tiro_forte(self):
-        pass
+        print("Botão Tiro Forte clicado")  # Log do clique no console
+        # Implementação do método tiro_forte
 
     # Outras funções que podem ser implementadas conforme necessário
     def atualizar_interface(self):
