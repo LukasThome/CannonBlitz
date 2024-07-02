@@ -4,7 +4,6 @@ from Jogador import Jogador
 class Campo:
     def __init__(self,id):
         self._id_jogador = id
-        """@AttributeType int"""
         self.posicoes = []
         for y in range(3):
             column = []

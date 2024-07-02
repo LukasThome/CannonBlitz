@@ -19,11 +19,6 @@ class Tabuleiro:
         self.canhao_jogador_local = Canhao()
         self.canhao_jogador_remoto = Canhao()
 
-        # self._unnamed_JogadorInterface_ = None
-        # self._unnamed_ImagemInterface_ = None
-        # self._unnamed_Campo_ = []
-        # self._unnamed_Jogador_ = []
-        # self._unnamed_Canhao_ = []
 
     def tiro_normal(self):
         pass
