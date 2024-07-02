@@ -8,13 +8,19 @@ from Tabuleiro import Tabuleiro
 class JogadorInterface(DogPlayerInterface):
 
     def __init__(self):
+        super().__init__()  # Chama o inicializador da classe pai, se necessário
+
         self.janela_principal = Tk()
-        self.desenhar_janela_principal()
         self.tabuleiro = Tabuleiro()
+        self.desenhar_janela_principal()
+
+       
         player_name = simpledialog.askstring(title="Identificação do jogador", prompt="Qual o seu nome?")
         self.dog_server_interface = DogActor()
         message = self.dog_server_interface.initialize(player_name, self)
         messagebox.showinfo(message=message)  # Mostra mensagem de conexão com o servidor
+        
+        
         self.janela_principal.mainloop()
         self.atualizar_interface()  # Atualiza a interface com o saldo inicial
 
@@ -26,7 +32,8 @@ class JogadorInterface(DogPlayerInterface):
         control_frame = Frame(self.janela_principal)
         control_frame.grid(row=0, column=1, rowspan=3, padx=10, pady=10)
 
-        self.saldo_label = Label(control_frame, text="Saldo: 0")  # Deixar saldo dinâmico
+        saldo_atual = self.tabuleiro.jogador_local.get_saldo()
+        self.saldo_label = Label(control_frame, text=f"Saldo: {saldo_atual}")
         self.saldo_label.grid(row=0, column=0, padx=3, pady=3)
 
         self.comprar_base_button = Button(control_frame, text="Comprar Base $2", command=self.comprar_base, state=ACTIVE)
@@ -48,23 +55,11 @@ class JogadorInterface(DogPlayerInterface):
         self.menu.add_cascade(label="Menu", menu=self.game_menu)
         self.game_menu.add_command(label="Iniciar Partida", command=self.iniciar_partida)
 
-        # campo jogador local
-        campo_jogador_local = Frame(self.janela_principal)
-        campo_jogador_local.grid(row=0, column=0, padx=10, pady=10)
-        self.board1 = []
-        
-        for i in range(3):
-            row_buttons = []
-            for j in range(5):
-                button = Button(campo_jogador_local, width=5, height=2, command=lambda i=i, j=j: self.clicar_posicao_campo(i, j))
-                button.grid(row=i, column=j, padx=1, pady=1)
-                row_buttons.append(button)
-            self.board1.append(row_buttons)
-        # campo 2
+        # Campo jogador remoto (agora no topo)
         campo_jogador_remoto = Frame(self.janela_principal)
-        campo_jogador_remoto.grid(row=2, column=0, padx=3, pady=3)
+        campo_jogador_remoto.grid(row=0, column=0, padx=3, pady=3)
         self.board2 = []
-        
+
         for i in range(3):
             row_buttons = []
             for j in range(5):
@@ -72,6 +67,22 @@ class JogadorInterface(DogPlayerInterface):
                 button.grid(row=i, column=j, padx=1, pady=1)
                 row_buttons.append(button)
             self.board2.append(row_buttons)
+
+        # Campo jogador local (agora na parte inferior)
+        campo_jogador_local = Frame(self.janela_principal)
+        campo_jogador_local.grid(row=2, column=0, padx=10, pady=10)
+        self.board1 = []
+
+        for i in range(3):
+            row_buttons = []
+            for j in range(5):
+                button = Button(campo_jogador_local, width=5, height=2, command=lambda i=i, j=j: self.clicar_posicao_campo(i, j))
+                button.grid(row=i, column=j, padx=1, pady=1)
+                button.configure(bg='green')  # Define o fundo do botão como verde
+                row_buttons.append(button)
+            self.board1.append(row_buttons)
+
+
 
     def clicar_posicao_campo(self, linha, coluna):
         """
@@ -125,4 +136,6 @@ class JogadorInterface(DogPlayerInterface):
 
     # Outras funções que podem ser implementadas conforme necessário
     def atualizar_interface(self):
-        pass
+        self.saldo_label.config(text=f"Saldo: {self.tabuleiro.jogador_local.get_saldo()}")
+
+        

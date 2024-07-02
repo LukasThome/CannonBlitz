@@ -86,53 +86,52 @@ class Tabuleiro:
         self.jogador_local.aumentar_saldo_jogador(saldo)
 
     def verificar_saldo_jogador(self, jogador):
-        return jogador.get_saldo()
+        return Jogador.get_saldo(jogador)
 
     def receber_jogada(self, A_move):
         pass
 
-    def verificar_bases_colocadas_pelo_jogador(self, Bases):
+    def verificar_bases_colocadas_pelo_jogador(self, Bases):#implementar
         pass
 
-    def verificar_base_comprada(self, linha, coluna):
+    def verificar_base_comprada(self, linha, coluna):#implementar
         pass
 
-    def verificar_tiro_normal(self, linha, coluna):
+    def verificar_tiro_normal(self, linha, coluna):#implementar
         pass
 
-    def verificar_tiro_forte(self, linha, coluna):
+    def verificar_tiro_forte(self, linha, coluna):#implementar
         pass
 
-    def verificar_tiro_preciso(self, linha, coluna):
+    def verificar_tiro_preciso(self, linha, coluna):#implementar
         pass
 
-    def verificar_jogada_vencedora(self, Campo_jogador):
+    def verificar_jogada_vencedora(self, Campo_jogador): #implementar
         pass
 
-    def definir_partida_finalizada(self):
+    def definir_partida_finalizada(self): ##implementar
         pass
 
-    def gerar_item_jogada(self):
+    def gerar_item_jogada(self): #Nao sei se é necessario
         pass
 
     def verificar_partida_andamento(self):
-        return self.estado == 1
+        return self.estado == 1     #Mudar para 3 no release
 
     def pega_campo_jogador_remoto(self):
         pass
 
-    def identificar_posicao_atingida(self, Campo_jogador_remoto, Posicao_atingida):
+    def identificar_posicao_atingida(self, Campo_jogador_remoto, Posicao_atingida): #implementar
         pass
 
-    def calibrar_precisao_tiro_normal(self):
+    def calibrar_precisao_tiro_normal(self): #Não sei se é necessario
         pass
 
     def resetar_precisao_tiro_normal(self):
         self.canhao_jogador_local.resetar_precisao_tiro_normal()
 
-    def tiro_forte(self):
+    def tiro_forte(self): #implementar
         mensagem = self.canhao_jogador_local.tiro_forte(self.campo_jogador_remoto)
-        # Implementar lógica adicional conforme necessário
         return mensagem
 
     def verificar_numero_bases(self):
@@ -146,10 +145,10 @@ class Tabuleiro:
         else:
             return None
 
-    def clicar_posicao_campo(self, linha, coluna):
+    def clicar_posicao_campo(self, linha, coluna): #ainda nao pronta
         if self.informar_turno():
             self.ocupar_posicao(linha, coluna)
-            self.aumentar_saldo_jogador(1)
+            self.diminuir_saldo_jogador(1)
             return f"Posição {linha}, {coluna} ocupada."
         else:
             return "Não é sua vez."
@@ -173,7 +172,7 @@ class Tabuleiro:
         
         return mensagem
 
-    def inicializar(self):
+    def inicializar(self): #Provavelmente nao ira precisar
         pass
 
     def pegar_estadoCampo(self):

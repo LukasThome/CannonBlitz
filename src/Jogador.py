@@ -4,7 +4,7 @@ class Jogador:
         self.nome = None
         self.vencedor = False
         self.turno = True  # Mudar para False para release
-        self.saldo = 0
+        self.saldo = 5 # Mudar para 0 para release
         self.id = None
         self.preencheu_bases = False
 
