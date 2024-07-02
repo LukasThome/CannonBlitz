@@ -144,19 +144,8 @@ class JogadorInterface(DogPlayerInterface):
             self.mensagem_label.config(text="Você já está em uma partida")
 
 
-    # def receber_inicio(self, start_status):
-    #     jogadores = start_status.get_players()
-    #     if len(jogadores) >= 2:
-    #         jogador_local_id = start_status.get_local_id()
-    #         self.tabuleiro.comecar_partida(jogadores, jogador_local_id)
-    #         self.tabuleiro.set_estado(2)  # Define o estado da partida como 2 (preparação)
-    #         message = start_status.get_message()
-    #         self.mensagem_label.config(text=message)
-    #         self.atualizar_interface()
-    #     else:
-    #         self.mensagem_label.config(text="Erro: jogadores insuficientes")
-    
-    
+   
+    #MUDAR NO DIAGRAMA
     def receive_start(self, start_status):
         jogadores = start_status.get_players()
         if len(jogadores) >= 2:
@@ -170,11 +159,12 @@ class JogadorInterface(DogPlayerInterface):
             self.mensagem_label.config(text="Erro: jogadores insuficientes")
         
         
-    
+    #MUDAR NO DIAGRAMA
     def receive_move(self, a_move):
         self.tabuleiro.receber_jogada(a_move)
         self.atualizar_interface()
 
+    #MUDAR NO DIAGRAMA
     def receive_withdrawal_notification(self):
         self.tabuleiro.receber_desistencia()
         self.mensagem_label.config(text="Seu oponente desistiu!")

@@ -137,7 +137,7 @@ class Tabuleiro:
     def identificar_posicao_atingida(self, Campo_jogador_remoto, Posicao_atingida): #implementar
         pass
 
-    def calibrar_precisao_tiro_normal(self): #Não sei se é necessario
+    def calibrar_precisao_tiro_normal(self): #Não sei se é necessario estar aqui tambem
         pass
 
     def resetar_precisao_tiro_normal(self):
