@@ -111,20 +111,25 @@ class JogadorInterface(DogPlayerInterface):
         if estado_partida == 2:
             if self.tabuleiro.campo_jogador_local.pega_quantidade_bases() == 5:
                 self.tabuleiro.jogador_local.preencheu_bases = True
-                if self.tabuleiro.jogador_local.preencheu_bases and self.tabuleiro.jogador_remoto.preencheu_bases:
+                self.mensagem_label.config(text="Você adicionou todas as suas bases. Aguarde o outro jogador.")
+                move_to_send = {
+                    'type': 'initial_setup',
+                    'positions': self.tabuleiro.campo_jogador_local.obter_posicoes_com_base(),
+                    'match_status': 'next'  # Adicione esta linha para garantir a presença de 'match_status'
+                }
+                self.dog_server_interface.send_move(move_to_send)
+                if self.tabuleiro.jogador_remoto.preencheu_bases:
                     self.tabuleiro.set_estado(3)
                     self.mensagem_label.config(text="Estado da partida atualizado para 'em andamento'")
-                else:
-                    self.mensagem_label.config(text="Você adicionou todas as suas bases. Aguarde o outro jogador.")
             else:
                 self.mensagem_label.config(text="Continue até adicionar 5 bases")
         elif estado_partida == 3:
             # Enviar jogada para o DOG (adapte conforme necessário)
             move_to_send = self.tabuleiro.gerar_item_jogada()
+            move_to_send['match_status'] = 'next'  # Adicione esta linha para garantir a presença de 'match_status'
             self.dog_server_interface.send_move(move_to_send)
             self.mensagem_label.config(text="Jogada enviada")
 
-    # Definição de funções adicionais para manipulação de eventos
     def iniciar_partida(self):
         if self.tabuleiro.estado == 1:
             status_inicio = self.dog_server_interface.start_match(2)  # Inicia a partida com 2 jogadores
@@ -143,9 +148,6 @@ class JogadorInterface(DogPlayerInterface):
         else:
             self.mensagem_label.config(text="Você já está em uma partida")
 
-
-   
-    #MUDAR NO DIAGRAMA
     def receive_start(self, start_status):
         jogadores = start_status.get_players()
         if len(jogadores) >= 2:
@@ -157,19 +159,25 @@ class JogadorInterface(DogPlayerInterface):
             self.atualizar_interface()
         else:
             self.mensagem_label.config(text="Erro: jogadores insuficientes")
-        
-        
-    #MUDAR NO DIAGRAMA
-    def receive_move(self, a_move):
-        self.tabuleiro.receber_jogada(a_move)
-        self.atualizar_interface()
 
-    #MUDAR NO DIAGRAMA
-    def receive_withdrawal_notification(self):
-        self.tabuleiro.receber_desistencia()
-        self.mensagem_label.config(text="Seu oponente desistiu!")
-        self.atualizar_interface()
-     
+    def receive_move(self, a_move):
+        move_type = a_move.get('type')
+        if move_type == 'initial_setup':
+            positions = a_move.get('positions', [])
+            for pos in positions:
+                linha, coluna = pos
+                self.tabuleiro.campo_jogador_remoto.adicionar_base(linha, coluna)
+            self.mensagem_label.config(text="Configuração inicial do campo recebida")
+            self.tabuleiro.jogador_remoto.preencheu_bases = True
+            if self.tabuleiro.jogador_local.preencheu_bases:
+                self.tabuleiro.set_estado(3)
+                self.mensagem_label.config(text="Estado da partida atualizado para 'em andamento'")
+            self.atualizar_interface()
+        else:
+            # Tratar outros tipos de jogadas aqui
+            self.tabuleiro.receber_jogada(a_move)
+            self.atualizar_interface()
+
     def comprar_base(self):
         print("Botão Comprar Base clicado")  # Log do clique no console
         mensagem = self.tabuleiro.comprar_base()
@@ -189,6 +197,24 @@ class JogadorInterface(DogPlayerInterface):
         print("Botão Tiro Forte clicado")  # Log do clique no console
         # Implementação do método tiro_forte
 
-    # Outras funções que podem ser implementadas conforme necessário
     def atualizar_interface(self):
         self.saldo_label.config(text=f"Saldo: {self.tabuleiro.jogador_local.get_saldo()}")
+        # Atualize a visualização do tabuleiro com as bases do jogador local e remoto
+        for y in range(3):
+            for x in range(5):
+                if self.tabuleiro.campo_jogador_local.posicao_tem_base(y, x):
+                    self.board1[y][x].configure(bg='green')
+                else:
+                    self.board1[y][x].configure(bg='white')
+
+                if self.tabuleiro.campo_jogador_remoto.posicao_tem_base(y, x):
+                    self.board2[y][x].configure(bg='red')
+                else:
+                    self.board2[y][x].configure(bg='white')
+
+
+
+    def receive_withdrawal_notification(self):
+        self.tabuleiro.receber_desistencia()
+        self.mensagem_label.config(text="Seu oponente desistiu!")
+        self.atualizar_interface()

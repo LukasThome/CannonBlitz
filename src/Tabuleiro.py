@@ -99,8 +99,17 @@ class Tabuleiro:
     def verificar_saldo_jogador(self, jogador):
         return Jogador.get_saldo(jogador)
 
-    def receber_jogada(self, A_move):
-        pass
+    def receber_jogada(self, a_move):
+        move_type = a_move.get('type')
+        if move_type == 'move':
+            player_id = a_move.get('player_id')
+            position = a_move.get('position')
+            # Tratar a jogada aqui (ex: processar um tiro, etc.)
+        elif move_type == 'initial_setup':
+            positions = a_move.get('positions', [])
+            for pos in positions:
+                linha, coluna = pos
+                self.campo_jogador_remoto.adicionar_base(linha, coluna)
 
     def verificar_bases_colocadas_pelo_jogador(self, Bases):#implementar
         return len(self.campo_jogador_local.obter_posicoes_com_base()) >= 5
@@ -123,10 +132,12 @@ class Tabuleiro:
     def definir_partida_finalizada(self): ##implementar
         pass
 
-    def gerar_item_jogada(self):
-        # Implemente a lógica para gerar a jogada aqui
-        jogada = {"tipo": "movimento", "detalhes": "detalhes_da_jogada"}
-        return jogada
+        def gerar_item_jogada(self):
+            return {
+                'type': 'move',
+                'player_id': self.jogador_local.id,
+                'position': self.ultima_posicao_tiro  # supondo que você armazena a última posição de tiro aqui
+            }
 
     def verificar_partida_andamento(self):
         return self.estado == 1     #Mudar para 3 no release
