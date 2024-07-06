@@ -4,6 +4,7 @@ from dog.dog_interface import DogPlayerInterface
 from dog.dog_actor import DogActor
 from dog.start_status import StartStatus
 from Tabuleiro import Tabuleiro
+import threading
 
 class JogadorInterface(DogPlayerInterface):
 
@@ -221,7 +222,7 @@ class JogadorInterface(DogPlayerInterface):
         print("Botão Tiro Normal clicado")
         mensagem = self.tabuleiro.tiro_normal()
         self.mensagem_label.config(text=mensagem)
-        self.atualizar_interface()
+        self.atualizar_interface(True)
 
         # Enviar a mudança de turno para o servidor
         move_to_send = {
@@ -241,23 +242,52 @@ class JogadorInterface(DogPlayerInterface):
     
     
     def tiro_forte(self):
-        print("Botão Tiro Forte clicado")  # Log do clique no console
-        # Implementação do método tiro_forte
+        mensagem = self.tabuleiro.tiro_forte()
+        self.mensagem_label.config(text=mensagem)
+        self.atualizar_interface(True)
 
-    def atualizar_interface(self):
+        # Enviar a mudança de turno para o servidor
+        move_to_send = {
+            'type': 'turno',
+            'turno': {
+                'jogador_local_id': self.tabuleiro.jogador_local.id,
+                'jogador_local_turno': self.tabuleiro.jogador_local.informar_turno(),
+                'jogador_remoto_id': self.tabuleiro.jogador_remoto.id,
+                'jogador_remoto_turno': self.tabuleiro.jogador_remoto.informar_turno()
+            },
+            'match_status': 'next'
+        }
+        self.dog_server_interface.send_move(move_to_send)
+
+    def atualizar_interface(self, tiro_efetuado=False):
         self.saldo_label.config(text=f"Saldo: {self.tabuleiro.jogador_local.get_saldo()}")
+
         # Atualize a visualização do tabuleiro com as bases do jogador local e remoto
         for y in range(3):
             for x in range(5):
-                if self.tabuleiro.campo_jogador_local.posicao_tem_base(y, x):
-                    self.board1[y][x].configure(bg='green')
+                if (y, x) in self.tabuleiro.campos_acertados_tiro_rodada:
+                    self.board2[y][x].configure(bg='yellow')
                 else:
-                    self.board1[y][x].configure(bg='white')
+                    if self.tabuleiro.campo_jogador_local.posicao_tem_base(y, x):
+                        self.board1[y][x].configure(bg='green')
+                    else:
+                        self.board1[y][x].configure(bg='white')
 
-                if self.tabuleiro.campo_jogador_remoto.posicao_tem_base(y, x):
-                    self.board2[y][x].configure(bg='red')
-                else:
-                    self.board2[y][x].configure(bg='white')
+                    if self.tabuleiro.campo_jogador_remoto.posicao_tem_base(y, x):
+                        self.board2[y][x].configure(bg='red')
+                    else:
+                        self.board2[y][x].configure(bg='white')
+
+        # Se um tiro foi efetuado, agenda a limpeza dos campos acertados após 2 segundos
+        if tiro_efetuado:
+            temporizador = threading.Timer(2.0, self.limpar_sinalizador_de_tiro_da_rodada)
+            # Inicia o temporizador
+            temporizador.start()
+
+    def limpar_sinalizador_de_tiro_da_rodada(self):
+        for y, x in self.tabuleiro.campos_acertados_tiro_rodada:
+            self.board2[y][x].configure(bg='white')
+        self.tabuleiro.limpar_campos_acertados_tiro_rodada()
 
     #adicionar no diagrama
     def sincronizar_turno(self, turnos):
