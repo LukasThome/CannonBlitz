@@ -14,7 +14,9 @@ class Campo:
         return False
 
     def remover_base_atingida(self, linha, coluna):
-        self.remover_base(linha, coluna)
+        if self.posicao_tem_base(linha, coluna):
+            self.posicoes[linha][coluna].set_defesa(False)
+            self.bases.remove((linha, coluna))
 
     def obter_posicoes_com_base(self):
         posicoes_com_base = []
