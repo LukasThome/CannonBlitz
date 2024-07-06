@@ -39,4 +39,5 @@ class Jogador:
         self.vencedor = True
 
     def definir_jogador_vencedor(self):
+        
         self.vencedor = True

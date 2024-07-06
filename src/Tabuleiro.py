@@ -1,4 +1,5 @@
 
+from tkinter import messagebox
 from Campo import Campo
 from Canhao import Canhao
 from Jogador import Jogador
@@ -60,7 +61,6 @@ class Tabuleiro:
             self.trocar_turno()
 
         return mensagem
-
 
 
     def get_estado(self):
@@ -141,11 +141,38 @@ class Tabuleiro:
     def verificar_tiro_preciso(self, linha, coluna):#implementar
         pass
 
-    def verificar_jogada_vencedora(self, Campo_jogador): #implementar
-        pass
+ 
+    def verificar_jogada_vencedora(self, campo_jogador):
+        # Verifica se o campo tem bases
+        campo_tem_base = campo_jogador
+        
+        # Se o campo não tem bases, o jogador venceu
+        if not campo_tem_base:
+            # Recupera o ID do jogador dono do campo
+            id_jogador_dono_campo = campo_jogador.id_jogador
+            
+            # Recupera o jogador vencedor através do ID do jogador perdedor
+            jogador_vencedor = self.recupera_jogador_do_tiro_disparado_atraves_id_do_adversario(id_jogador_dono_campo)
+            
+            # Define o jogador como vencedor
+            jogador_vencedor.definir_jogador_vencedor()
+            
+            # Define o status da partida como finalizada
+            self.definir_partida_finalizada()
+            
+            return True
+        
+        return False
 
-    def definir_partida_finalizada(self): ##implementar
-        pass
+
+
+    def definir_partida_finalizada(self):
+        # Aqui você pode adicionar lógica para exibir mensagem de partida finalizada ou outros procedimentos necessários
+        print("Partida finalizada!")
+        self.estado = 4  # Estado 4 pode ser utilizado para indicar que a partida está finalizada
+
+        # Limpar campos ou realizar outras ações de término de jogo, se necessário
+        self.limpar_campos_acertados_tiro_rodada()
 
     def gerar_item_jogada(self):
             return {
