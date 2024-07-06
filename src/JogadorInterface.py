@@ -160,24 +160,6 @@ class JogadorInterface(DogPlayerInterface):
         else:
             self.mensagem_label.config(text="Erro: jogadores insuficientes")
 
-    # def receive_move(self, a_move):
-    #     move_type = a_move.get('type')
-    #     if move_type == 'initial_setup':
-    #         positions = a_move.get('positions', [])
-    #         for pos in positions:
-    #             linha, coluna = pos
-    #             self.tabuleiro.campo_jogador_remoto.adicionar_base(linha, coluna)
-    #         self.mensagem_label.config(text="Configuração inicial do campo recebida")
-    #         self.tabuleiro.jogador_remoto.preencheu_bases = True
-    #         if self.tabuleiro.jogador_local.preencheu_bases:
-    #             self.tabuleiro.set_estado(3)
-    #             self.mensagem_label.config(text="Estado da partida atualizado para 'em andamento'")
-    #         self.atualizar_interface()
-    #     else:
-    #         # Tratar outros tipos de jogadas aqui
-    #         self.tabuleiro.receber_jogada(a_move)
-    #         self.atualizar_interface()
-    
     def receive_move(self, a_move):
         move_type = a_move.get('type')
         if move_type == 'colocar_bases':
@@ -212,39 +194,21 @@ class JogadorInterface(DogPlayerInterface):
     def tiro_preciso(self):
         print("Botão Tiro Preciso clicado")  # Log do clique no console
 
-    # def tiro_normal(self):
-    #     print("Botão Tiro Normal clicado")  # Log do clique no console
-    #     mensagem = self.tabuleiro.tiro_normal()
-    #     self.mensagem_label.config(text=mensagem)
-    #     self.atualizar_interface()
-
-
     def tiro_normal(self):
-        print("Botão Tiro Normal clicado")
         mensagem,linha,coluna = self.tabuleiro.tiro_normal()
         self.mensagem_label.config(text=mensagem)
         self.atualizar_interface()
 
-        # Enviar a mudança de turno para o servidor
-        move_to_send = {
-            'type': 'tiro_normal',
-            'linha': linha,
-            'coluna': coluna,
-            'turno': {
-                'jogador_local_id': self.tabuleiro.jogador_local.id,
-                'jogador_local_turno': self.tabuleiro.jogador_local.informar_turno(),
-                'jogador_remoto_id': self.tabuleiro.jogador_remoto.id,
-                'jogador_remoto_turno': self.tabuleiro.jogador_remoto.informar_turno()
-            },
-            'match_status': 'next'
-        }
+        # tirar metodo gerar item jogada
         if mensagem != 'Não é seu turno':
+            move_to_send = {
+                'type': 'tiro_normal',
+                'linha': linha,
+                'coluna': coluna,
+                'match_status': 'next'
+            }
             self.dog_server_interface.send_move(move_to_send)
 
-        print(f"Turno do jogador local ({self.tabuleiro.jogador_local.nome}): {self.tabuleiro.jogador_local.informar_turno()}")
-        print(f"Turno do jogador remoto ({self.tabuleiro.jogador_remoto.nome}): {self.tabuleiro.jogador_remoto.informar_turno()}")
-    
-    
     def tiro_forte(self):
         print("Botão Tiro Forte clicado")  # Log do clique no console
         # Implementação do método tiro_forte

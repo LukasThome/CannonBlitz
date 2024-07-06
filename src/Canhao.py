@@ -11,7 +11,5 @@ class Canhao:
         self.tiro_normal_obj.calibrar_precisao()
 
     def tiro_normal(self, campo_jogador_remoto):
-        print("Método tiro_normal do Canhao foi chamado")
         posicoes_com_base = campo_jogador_remoto.obter_posicoes_com_base()
-        print(f"Posições com base: {posicoes_com_base}")
         return self.tiro_normal_obj.atirar(posicoes_com_base)

@@ -21,71 +21,33 @@ class Tabuleiro:
         self.canhao_jogador_local = Canhao()
         self.canhao_jogador_remoto = Canhao()
 
-
-    # def tiro_normal(self):
-    #     print("Método tiro_normal do Tabuleiro foi chamado")
-    #     mensagem = ""
-    #     if not self.verificar_partida_andamento():
-    #         mensagem = "A partida deve estar em andamento"
-    #     elif not self.informar_turno():  # Ajuste para usar o método correto
-    #         mensagem = "Não é seu turno"
-    #     else:
-    #         # Identificar a posição que o tiro acertou
-    #         linha, coluna = self.canhao_jogador_local.tiro_normal(self.campo_jogador_remoto)
-    #         print(f"Posição atingida: ({linha}, {coluna})")
-
-    #         # Verificar se a posição tem uma base
-    #         if not self.campo_jogador_remoto.posicao_tem_base(linha, coluna):
-    #             # Calibrar precisão
-    #             self.canhao_jogador_local.calibrar_precisao()
-    #             mensagem = "Você não acertou nenhuma base."
-    #         else:
-    #             # Destruir a base do adversário
-    #             self.campo_jogador_remoto.remover_base(linha, coluna)
-    #             # Aumentar o saldo do jogador
-    #             self.jogador_local.aumentar_saldo_jogador(1)
-    #             # Resetar precisão
-    #             self.canhao_jogador_local.resetar_precisao_tiro_normal()
-    #             mensagem = "Você destruiu uma base adversária!"
-
-    #         # Verificar jogada vencedora
-    #         if self.verificar_jogada_vencedora(self.campo_jogador_remoto):
-    #             mensagem += " Você venceu o jogo!"
-
-    #     return mensagem
-
     def tiro_normal(self):
-        print("Método tiro_normal do Tabuleiro foi chamado")
         mensagem = None
         linha, coluna = None, None
-        if not self.verificar_partida_andamento():
-            mensagem = "A partida deve estar em andamento"
-        elif not self.jogador_local.informar_turno():
-            mensagem = "Não é seu turno"
-        else:
-            self.jogador_local.set_turno(False)
-            self.jogador_remoto.set_turno(True)
-            # Identificar a posição que o tiro acertou
-            linha, coluna = self.canhao_jogador_local.tiro_normal(self.campo_jogador_remoto)
-            print(f"Posição atingida: ({linha}, {coluna})")
-
-            # Verificar se a posição nao tem uma base
-            if not self.campo_jogador_remoto.posicao_tem_base(linha, coluna):
-                # Calibrar precisão
-                self.canhao_jogador_local.calibrar_precisao()
-                mensagem = "Você não acertou nenhuma base."
+        partida_andamento = self.verificar_partida_andamento()
+        if partida_andamento:
+            vez_jogador_local = self.jogador_local.informar_turno()
+            if vez_jogador_local:
+                    self.jogador_local.set_turno(False)
+                    self.jogador_remoto.set_turno(True)
+                    campo_jogador_remoto = self.pega_campo_jogador_remoto()
+                    linha, coluna = self.canhao_jogador_local.tiro_normal(campo_jogador_remoto)
+                    posicao_tem_base = self.campo_jogador_remoto.posicao_tem_base(linha, coluna)
+                    if posicao_tem_base:
+                        self.campo_jogador_remoto.remover_base(linha, coluna)
+                        self.jogador_local.aumentar_saldo_jogador(1)
+                        self.canhao_jogador_local.resetar_precisao_tiro_normal()
+                        mensagem = "Você destruiu uma base adversária!"
+                        # jogada_vencedora = self.verificar_jogada_vencedora(self.campo_jogador_remoto)
+                        # if jogada_vencedora:
+                        #     mensagem += " Você venceu o jogo!"
+                    else:
+                        self.canhao_jogador_local.calibrar_precisao()
+                        mensagem = "Você não acertou nenhuma base."
             else:
-                # Destruir a base do adversário
-                self.campo_jogador_remoto.remover_base(linha, coluna)
-                # Aumentar o saldo do jogador
-                self.jogador_local.aumentar_saldo_jogador(1)
-                # Resetar precisão
-                self.canhao_jogador_local.resetar_precisao_tiro_normal()
-                mensagem = "Você destruiu uma base adversária!"
-
-            # Verificar jogada vencedora
-            if self.verificar_jogada_vencedora(self.campo_jogador_remoto):
-                mensagem += " Você venceu o jogo!"
+                mensagem = "Não é seu turno"
+        else:
+            mensagem = "A partida deve estar em andamento"
 
         return mensagem,linha,coluna
 
@@ -199,7 +161,7 @@ class Tabuleiro:
         return self.estado == 3     #Mudar para 3 no release
 
     def pega_campo_jogador_remoto(self):
-        pass
+        return self.campo_jogador_remoto
 
     def identificar_posicao_atingida(self, Campo_jogador_remoto, Posicao_atingida): #implementar
         pass
