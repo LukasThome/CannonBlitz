@@ -113,7 +113,7 @@ class JogadorInterface(DogPlayerInterface):
                 self.tabuleiro.jogador_local.preencheu_bases = True
                 self.mensagem_label.config(text="Você adicionou todas as suas bases. Aguarde o outro jogador.")
                 move_to_send = {
-                    'type': 'initial_setup',
+                    'type': 'colocar_bases',
                     'positions': self.tabuleiro.campo_jogador_local.obter_posicoes_com_base(),
                     'match_status': 'next'  # Adicione esta linha para garantir a presença de 'match_status'
                 }
@@ -180,7 +180,7 @@ class JogadorInterface(DogPlayerInterface):
     
     def receive_move(self, a_move):
         move_type = a_move.get('type')
-        if move_type == 'initial_setup':
+        if move_type == 'colocar_bases':
             positions = a_move.get('positions', [])
             for pos in positions:
                 linha, coluna = pos
@@ -190,13 +190,15 @@ class JogadorInterface(DogPlayerInterface):
             if self.tabuleiro.jogador_local.preencheu_bases:
                 self.tabuleiro.set_estado(3)
                 self.mensagem_label.config(text="Estado da partida atualizado para 'em andamento'")
-                self.tabuleiro.sortear_turno()
+                # self.tabuleiro.sortear_turno()
             self.atualizar_interface()
         elif move_type == 'turno':
             turnos = a_move.get('turno', {})
             self.sincronizar_turno(turnos)
         else:
             # Tratar outros tipos de jogadas aqui
+            # turnos = a_move.get('turno', {})
+            # self.sincronizar_turno(turnos)
             self.tabuleiro.receber_jogada(a_move)
             self.atualizar_interface()
 
@@ -219,13 +221,15 @@ class JogadorInterface(DogPlayerInterface):
 
     def tiro_normal(self):
         print("Botão Tiro Normal clicado")
-        mensagem = self.tabuleiro.tiro_normal()
+        mensagem,linha,coluna = self.tabuleiro.tiro_normal()
         self.mensagem_label.config(text=mensagem)
         self.atualizar_interface()
 
         # Enviar a mudança de turno para o servidor
         move_to_send = {
-            'type': 'turno',
+            'type': 'tiro_normal',
+            'linha': linha,
+            'coluna': coluna,
             'turno': {
                 'jogador_local_id': self.tabuleiro.jogador_local.id,
                 'jogador_local_turno': self.tabuleiro.jogador_local.informar_turno(),
