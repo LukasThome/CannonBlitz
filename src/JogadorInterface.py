@@ -181,7 +181,11 @@ class JogadorInterface(DogPlayerInterface):
         elif move_type == 'tiro_normal':
             mensagem_tiro = self.tabuleiro.receber_jogada(a_move)
             self.atualizar_interface([(a_move.get('linha'), a_move.get('coluna'))])
-            print('MENSAGEM TIRO: ', mensagem_tiro)
+            if mensagem_tiro:
+                self.mensagem_label.config(text=mensagem_tiro)
+        elif move_type == 'tiro_forte':
+            mensagem_tiro = self.tabuleiro.receber_jogada(a_move)
+            self.atualizar_interface([tuple(pos) for pos in a_move.get('posicoes_atingidas')])
             if mensagem_tiro:
                 self.mensagem_label.config(text=mensagem_tiro)
         else:
@@ -230,7 +234,6 @@ class JogadorInterface(DogPlayerInterface):
 
     def atualizar_interface(self, posicoes_atingidas=None):
         self.saldo_label.config(text=f"Saldo: {self.tabuleiro.jogador_local.get_saldo()}")
-
         # Atualize a visualização do tabuleiro com as bases do jogador local e remoto
         for y in range(3):
             for x in range(5):
@@ -262,8 +265,6 @@ class JogadorInterface(DogPlayerInterface):
                     self.board1[y][x].configure(bg='white')
                 else:
                     self.board2[y][x].configure(bg='white')
-            else:
-                print(f"Erro: posição inválida encontrada - y: {y}, x: {x}")
 
     #adicionar no diagrama
     def sincronizar_turno(self, turnos):

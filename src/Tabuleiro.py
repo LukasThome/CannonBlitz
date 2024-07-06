@@ -111,7 +111,7 @@ class Tabuleiro:
         elif jogada == 'tiro_normal':
             return self.verificar_tiro_normal(a_move)
         elif jogada == 'tiro_forte':
-            return self.verificar_tiro_forte(a_move)
+            return self.verificar_tiro_forte(a_move.get('posicoes_atingidas'))
 
     def verificar_bases_colocadas_pelo_jogador(self, Bases):#implementar
         return len(self.campo_jogador_local.obter_posicoes_com_base()) >= 5
@@ -141,8 +141,24 @@ class Tabuleiro:
             self.jogador_remoto.set_turno(False)
             return mensagem
 
-    def verificar_tiro_forte(self, a_move):#implementar
-        pass
+    def verificar_tiro_forte(self, posicoes_atingidas):
+        self.jogador_remoto.diminuir_saldo(3)
+        bases_destruidas = 0
+        for linha, coluna in posicoes_atingidas:
+            posicao_tem_base = self.campo_jogador_local.posicao_tem_base(linha, coluna)
+            if posicao_tem_base:
+                self.campo_jogador_local.remover_base(linha, coluna)
+                bases_destruidas += 1
+        if bases_destruidas == 0:
+            mensagem = "Jogador remoto nao acertou nenhuma base"
+        else:
+            self.jogador_remoto.aumentar_saldo_jogador(bases_destruidas)
+            mensagem = f"Jogador remoto destruiu {bases_destruidas} base(s)!"
+            jogador_remoto_vencedor = self.verificar_jogada_vencedora(self.campo_jogador_remoto)
+            # VERIFICAR JOGADA VENCEDORA
+        self.jogador_local.set_turno(True)
+        self.jogador_remoto.set_turno(False)
+        return mensagem
 
     def verificar_tiro_preciso(self, linha, coluna):#implementar
         pass
@@ -170,7 +186,7 @@ class Tabuleiro:
 
     def tiro_forte(self):
         mensagem = ""
-        posicoes_atingidas = []  # Inicialize como uma lista vazia
+        posicoes_atingidas = []
         partida_andamento = self.verificar_partida_andamento()
         vez_jogador_local = self.jogador_local.informar_turno()
         saldo_suficiente = self.jogador_local.saldo_suficiente(3)
@@ -196,9 +212,9 @@ class Tabuleiro:
             else:
                 self.jogador_local.aumentar_saldo_jogador(bases_destruidas)
                 mensagem = f"Você destruiu {bases_destruidas} base(s) adversária(s)!"
-            partida_vencedora = self.verificar_jogada_vencedora(self.campo_jogador_remoto)
-            if partida_vencedora:
-                mensagem += " Você venceu o jogo!"
+                partida_vencedora = self.verificar_jogada_vencedora(self.campo_jogador_remoto)
+                if partida_vencedora:
+                    mensagem += " Você venceu o jogo!"
             self.trocar_turno()
         return mensagem, posicoes_atingidas
 
