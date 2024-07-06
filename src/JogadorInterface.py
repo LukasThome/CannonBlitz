@@ -238,7 +238,8 @@ class JogadorInterface(DogPlayerInterface):
             },
             'match_status': 'next'
         }
-        self.dog_server_interface.send_move(move_to_send)
+        if mensagem != 'Não é seu turno':
+            self.dog_server_interface.send_move(move_to_send)
 
         print(f"Turno do jogador local ({self.tabuleiro.jogador_local.nome}): {self.tabuleiro.jogador_local.informar_turno()}")
         print(f"Turno do jogador remoto ({self.tabuleiro.jogador_remoto.nome}): {self.tabuleiro.jogador_remoto.informar_turno()}")
