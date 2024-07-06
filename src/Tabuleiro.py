@@ -55,20 +55,22 @@ class Tabuleiro:
 
     #     return mensagem
 
-
     def tiro_normal(self):
         print("Método tiro_normal do Tabuleiro foi chamado")
-        mensagem = ""
+        mensagem = None
+        linha, coluna = None, None
         if not self.verificar_partida_andamento():
             mensagem = "A partida deve estar em andamento"
         elif not self.jogador_local.informar_turno():
             mensagem = "Não é seu turno"
         else:
+            self.jogador_local.set_turno(False)
+            self.jogador_remoto.set_turno(True)
             # Identificar a posição que o tiro acertou
             linha, coluna = self.canhao_jogador_local.tiro_normal(self.campo_jogador_remoto)
             print(f"Posição atingida: ({linha}, {coluna})")
 
-            # Verificar se a posição tem uma base
+            # Verificar se a posição nao tem uma base
             if not self.campo_jogador_remoto.posicao_tem_base(linha, coluna):
                 # Calibrar precisão
                 self.canhao_jogador_local.calibrar_precisao()
@@ -86,22 +88,10 @@ class Tabuleiro:
             if self.verificar_jogada_vencedora(self.campo_jogador_remoto):
                 mensagem += " Você venceu o jogo!"
 
-            self.set_campos_acertados_tiro_rodada(linha, coluna)
-            # Trocar turno
-            self.trocar_turno()
-
-        return mensagem
-
-
+        return mensagem,linha,coluna
 
     def get_estado(self):
         return self.estado
-    
-    def set_campos_acertados_tiro_rodada(self, linha, coluna):
-        self.campos_acertados_tiro_rodada.append((linha, coluna))
-        
-    def limpar_campos_acertados_tiro_rodada(self):
-        self.campos_acertados_tiro_rodada = []
 
     def comecar_partida(self, jogadores, id_jogador_local):
         self.jogador_local.definir_nome(jogadores[0][0])
@@ -146,33 +136,18 @@ class Tabuleiro:
         return Jogador.get_saldo(jogador)
 
     def receber_jogada(self, a_move):
-        move_type = a_move.get('type')
-        if move_type == 'move':
+        jogada = a_move.get('type')
+        if jogada == 'move':
             player_id = a_move.get('player_id')
             position = a_move.get('position')
             # Tratar a jogada aqui (ex: processar um tiro, etc.)
-        elif move_type == 'tiro':
-            print('RECEBEU JOGADA TIRO')
-            for linha, coluna in a_move.get('position'):
-                self.set_campos_acertados_tiro_rodada(linha, coluna)
-        elif move_type == 'initial_setup':
+        elif jogada == 'colocar_bases':
             positions = a_move.get('positions', [])
             for pos in positions:
                 linha, coluna = pos
                 self.campo_jogador_remoto.adicionar_base(linha, coluna)
-                
-    def gerar_item_jogada(self, tipo_jogada, match_status):
-            return {
-                'type': tipo_jogada,
-                'turno': {
-                    'jogador_local_id': self.jogador_local.id,
-                    'jogador_local_turno': self.jogador_local.informar_turno(),
-                    'jogador_remoto_id': self.jogador_remoto.id,
-                    'jogador_remoto_turno': self.jogador_remoto.informar_turno(),
-                },
-                'position': self.campos_acertados_tiro_rodada,
-                'match_status': match_status
-            }
+        elif jogada == 'tiro_normal':
+            self.verificar_tiro_normal(a_move)
 
     def verificar_bases_colocadas_pelo_jogador(self, Bases):#implementar
         return len(self.campo_jogador_local.obter_posicoes_com_base()) >= 5
@@ -180,8 +155,27 @@ class Tabuleiro:
     def verificar_base_comprada(self, linha, coluna):#implementar
         pass
 
-    def verificar_tiro_normal(self, linha, coluna):#implementar
-        pass
+    def verificar_tiro_normal(self, a_move):
+        linha = a_move.get('linha')
+        coluna = a_move.get('coluna')
+        posicao_tem_base = self.campo_jogador_local.posicao_tem_base(linha,coluna)
+        if posicao_tem_base:
+            self.campo_jogador_local.remover_base_atingida(linha,coluna)
+            self.jogador_remoto.aumentar_saldo_jogador(1)
+            self.canhao_jogador_remoto.resetar_precisao_tiro_normal()
+            jogada_vencedora = self.verificar_jogada_vencedora(self.campo_jogador_local)
+            # if jogada_vencedora:
+            #     mensagem = "Jogador remoto vencedor"
+            #     self.jogador_remoto.set_vencedor(True)
+            #     return mensagem
+            # else:
+            self.jogador_local.set_turno(True)
+            self.jogador_remoto.set_turno(False)
+        else:
+            mensagem = "Jogador remoto nao acertou nenhuma base"
+            self.jogador_local.set_turno(True)
+            self.jogador_remoto.set_turno(False)
+            return mensagem
 
     def verificar_tiro_forte(self, linha, coluna):#implementar
         pass
@@ -248,6 +242,7 @@ class Tabuleiro:
 
             # Trocar turno
             self.trocar_turno()
+            return mensagem, posicoes_atingidas
 
         return mensagem
 
