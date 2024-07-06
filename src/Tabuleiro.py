@@ -147,7 +147,9 @@ class Tabuleiro:
                 linha, coluna = pos
                 self.campo_jogador_remoto.adicionar_base(linha, coluna)
         elif jogada == 'tiro_normal':
-            self.verificar_tiro_normal(a_move)
+            return self.verificar_tiro_normal(a_move)
+        elif jogada == 'tiro_forte':
+            return self.verificar_tiro_forte(a_move)
 
     def verificar_bases_colocadas_pelo_jogador(self, Bases):#implementar
         return len(self.campo_jogador_local.obter_posicoes_com_base()) >= 5
@@ -177,7 +179,7 @@ class Tabuleiro:
             self.jogador_remoto.set_turno(False)
             return mensagem
 
-    def verificar_tiro_forte(self, linha, coluna):#implementar
+    def verificar_tiro_forte(self, a_move):#implementar
         pass
 
     def verificar_tiro_preciso(self, linha, coluna):#implementar
@@ -206,45 +208,37 @@ class Tabuleiro:
 
     def tiro_forte(self):
         mensagem = ""
-        if not self.verificar_partida_andamento():
+        posicoes_atingidas = []  # Inicialize como uma lista vazia
+        partida_andamento = self.verificar_partida_andamento()
+        vez_jogador_local = self.jogador_local.informar_turno()
+        saldo_suficiente = self.jogador_local.saldo_suficiente(3)
+        if not partida_andamento:
             mensagem = "A partida deve estar em andamento"
-        elif not self.jogador_local.informar_turno():
+        elif not vez_jogador_local:
             mensagem = "Não é seu turno"
-        elif not self.jogador_local.saldo_suficiente(3):
-            mensagem = "Você não tem saldo suficiente"
+        elif not saldo_suficiente:
+            mensagem = "Saldo insuficiente"
         else:
-            # Realiza o tiro forte e obtém as posições atingidas
+            campo_jogador_remoto = self.campo_jogador_remoto
             self.jogador_local.diminuir_saldo(3)
-            posicoes_atingidas = self.canhao_jogador_local.tiro_forte(self.campo_jogador_remoto)
+            posicoes_atingidas = self.canhao_jogador_local.tiro_forte(campo_jogador_remoto)
 
-            # Verificar se alguma das posições atingidas tem uma base
             bases_destruidas = 0
             for linha, coluna in posicoes_atingidas:
-                if self.campo_jogador_remoto.posicao_tem_base(linha, coluna):
-                    # Destruir a base do adversário
+                posicao_tem_base = self.campo_jogador_remoto.posicao_tem_base(linha, coluna)
+                if posicao_tem_base:
                     self.campo_jogador_remoto.remover_base(linha, coluna)
                     bases_destruidas += 1
-
             if bases_destruidas == 0:
                 mensagem = "Você não destruiu nenhuma base."
             else:
-                # Aumentar o saldo do jogador
                 self.jogador_local.aumentar_saldo_jogador(bases_destruidas)
                 mensagem = f"Você destruiu {bases_destruidas} base(s) adversária(s)!"
-
-            # Adicionar todas as posições atingidas à lista de campos acertados nesta rodada
-            for linha, coluna in posicoes_atingidas:
-                self.set_campos_acertados_tiro_rodada(linha, coluna)
-
-            # Verificar jogada vencedora
             if self.verificar_jogada_vencedora(self.campo_jogador_remoto):
                 mensagem += " Você venceu o jogo!"
-
-            # Trocar turno
             self.trocar_turno()
-            return mensagem, posicoes_atingidas
+        return mensagem, posicoes_atingidas  # Sempre retornar dois valores
 
-        return mensagem
 
     def verificar_numero_bases(self):
         return len(self.campo_jogador_local.obter_posicoes_com_base())

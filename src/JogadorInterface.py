@@ -194,13 +194,14 @@ class JogadorInterface(DogPlayerInterface):
                 # self.tabuleiro.sortear_turno()
             self.atualizar_interface()
         elif move_type == 'turno':
-            print('turno???')
             turnos = a_move.get('turno', {})
             self.sincronizar_turno(turnos)
         elif move_type == 'tiro_normal':
-            print('e aii???')
+            mensagem_tiro = self.tabuleiro.receber_jogada(a_move)
             self.atualizar_interface([(a_move.get('linha'), a_move.get('coluna'))])
-            self.tabuleiro.receber_jogada(a_move)
+            print('MENSAGEM TIRO: ', mensagem_tiro)
+            if mensagem_tiro:
+                self.mensagem_label.config(text=mensagem_tiro)
         else:
             # Tratar outros tipos de jogadas aqui
             # turnos = a_move.get('turno', {})
@@ -248,10 +249,20 @@ class JogadorInterface(DogPlayerInterface):
         mensagem, posicoes_atingidas = self.tabuleiro.tiro_forte()
         self.mensagem_label.config(text=mensagem)
         self.atualizar_interface(posicoes_atingidas)
-
         # Enviar a mudança de turno para o servidor
-        move_to_send = self.tabuleiro.gerar_item_jogada('tiro', 'next')
-        self.dog_server_interface.send_move(move_to_send)
+        move_to_send = {
+            'type': 'tiro_forte',
+            'posicoes_atingidas': posicoes_atingidas,
+            'turno': {
+                'jogador_local_id': self.tabuleiro.jogador_local.id,
+                'jogador_local_turno': self.tabuleiro.jogador_local.informar_turno(),
+                'jogador_remoto_id': self.tabuleiro.jogador_remoto.id,
+                'jogador_remoto_turno': self.tabuleiro.jogador_remoto.informar_turno()
+            },
+            'match_status': 'next'
+        }
+        if mensagem != 'Não é seu turno':
+            self.dog_server_interface.send_move(move_to_send)
 
     def atualizar_interface(self, posicoes_atingidas=None):
         self.saldo_label.config(text=f"Saldo: {self.tabuleiro.jogador_local.get_saldo()}")
@@ -260,7 +271,6 @@ class JogadorInterface(DogPlayerInterface):
         for y in range(3):
             for x in range(5):
                 if posicoes_atingidas is not None and (y, x) in posicoes_atingidas:
-                    print('TURNO LOCAL? :', self.tabuleiro.jogador_local.informar_turno())
                     if self.tabuleiro.jogador_local.informar_turno():
                         self.board1[y][x].configure(bg='yellow')
                     else:
@@ -282,9 +292,7 @@ class JogadorInterface(DogPlayerInterface):
             temporizador.start()
 
     def limpar_sinalizador_de_tiro_da_rodada(self, posicoes_atingidas):
-        print('entrou aqui')
         for y, x in posicoes_atingidas:
-            # Verifique se y e x não são None
             if y is not None and x is not None:
                 if self.tabuleiro.jogador_local.informar_turno():
                     self.board1[y][x].configure(bg='white')

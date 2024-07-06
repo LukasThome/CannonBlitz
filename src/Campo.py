@@ -49,3 +49,6 @@ class Campo:
             self.bases.remove((linha, coluna))
             # print(f"Base removida na posição ({linha}, {coluna}) para o jogador {self._id_jogador}")
             # print(f"Estado atual das bases: {self.obter_posicoes_com_base()}")
+
+    def get_posicoes(self):
+        return self.posicoes
