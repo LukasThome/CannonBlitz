@@ -22,38 +22,7 @@ class Tabuleiro:
         self.canhao_jogador_remoto = Canhao()
 
 
-    # def tiro_normal(self):
-    #     print("Método tiro_normal do Tabuleiro foi chamado")
-    #     mensagem = ""
-    #     if not self.verificar_partida_andamento():
-    #         mensagem = "A partida deve estar em andamento"
-    #     elif not self.informar_turno():  # Ajuste para usar o método correto
-    #         mensagem = "Não é seu turno"
-    #     else:
-    #         # Identificar a posição que o tiro acertou
-    #         linha, coluna = self.canhao_jogador_local.tiro_normal(self.campo_jogador_remoto)
-    #         print(f"Posição atingida: ({linha}, {coluna})")
-
-    #         # Verificar se a posição tem uma base
-    #         if not self.campo_jogador_remoto.posicao_tem_base(linha, coluna):
-    #             # Calibrar precisão
-    #             self.canhao_jogador_local.calibrar_precisao()
-    #             mensagem = "Você não acertou nenhuma base."
-    #         else:
-    #             # Destruir a base do adversário
-    #             self.campo_jogador_remoto.remover_base(linha, coluna)
-    #             # Aumentar o saldo do jogador
-    #             self.jogador_local.aumentar_saldo_jogador(1)
-    #             # Resetar precisão
-    #             self.canhao_jogador_local.resetar_precisao_tiro_normal()
-    #             mensagem = "Você destruiu uma base adversária!"
-
-    #         # Verificar jogada vencedora
-    #         if self.verificar_jogada_vencedora(self.campo_jogador_remoto):
-    #             mensagem += " Você venceu o jogo!"
-
-    #     return mensagem
-
+    
 
     def tiro_normal(self):
         print("Método tiro_normal do Tabuleiro foi chamado")
@@ -125,7 +94,7 @@ class Tabuleiro:
         if self.estado == 2:  # Verificar se o estado da partida é 2 (preparação)
             self.campo_jogador_local.adicionar_base(linha, coluna)
             if self.verificar_bases_colocadas():
-                self.estado = 3  # Atualizar estado para 3 (em andame
+                self.estado = 3  # Atualizar estado para 3 (em andamento)
         
     
     def diminuir_saldo_jogador(self, saldo):
