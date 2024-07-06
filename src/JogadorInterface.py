@@ -220,7 +220,7 @@ class JogadorInterface(DogPlayerInterface):
         mensagem, posicoes_atingidas = self.tabuleiro.tiro_forte()
         self.mensagem_label.config(text=mensagem)
         self.atualizar_interface(posicoes_atingidas)
-        if mensagem != 'Não é seu turno':
+        if mensagem != "A partida deve estar em andamento" and mensagem != 'Não é seu turno' and mensagem != 'Saldo insuficiente':
             move_to_send = {
                 'type': 'tiro_forte',
                 'posicoes_atingidas': posicoes_atingidas,
