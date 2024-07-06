@@ -83,7 +83,7 @@ class JogadorInterface(DogPlayerInterface):
         self.mensagem_label.grid(row=3, column=0, padx=3, pady=3)
 
     def clicar_posicao_campo(self, linha, coluna):
-        print(f"Clique registrado na linha {linha}, coluna {coluna}")
+        # print(f"Clique registrado na linha {linha}, coluna {coluna}")
 
         estado_partida = self.tabuleiro.get_estado()
 
@@ -101,12 +101,12 @@ class JogadorInterface(DogPlayerInterface):
             return
 
         self.tabuleiro.campo_jogador_local.adicionar_base(linha, coluna)
-        print(f"Base adicionada na posição ({linha}, {coluna}) pelo jogador local")
-        print(f"Bases ocupadas: {self.tabuleiro.campo_jogador_local.obter_posicoes_com_base()}")
-        print(f"Quantidade de bases: {self.tabuleiro.campo_jogador_local.pega_quantidade_bases()}")
-        print(f"Informações do jogador local: {vars(self.tabuleiro.jogador_local)}")
-        print(f"Informações do jogador remoto: {vars(self.tabuleiro.jogador_remoto)}")
-        print(f"Estado da partida: {self.tabuleiro.get_estado()}")
+        # print(f"Base adicionada na posição ({linha}, {coluna}) pelo jogador local")
+        # print(f"Bases ocupadas: {self.tabuleiro.campo_jogador_local.obter_posicoes_com_base()}")
+        # print(f"Quantidade de bases: {self.tabuleiro.campo_jogador_local.pega_quantidade_bases()}")
+        # print(f"Informações do jogador local: {vars(self.tabuleiro.jogador_local)}")
+        # print(f"Informações do jogador remoto: {vars(self.tabuleiro.jogador_remoto)}")
+        # print(f"Estado da partida: {self.tabuleiro.get_estado()}")
         self.atualizar_interface()
 
         if estado_partida == 2:
@@ -126,7 +126,7 @@ class JogadorInterface(DogPlayerInterface):
                 self.mensagem_label.config(text="Continue até adicionar 5 bases")
         elif estado_partida == 3:
             # Enviar jogada para o DOG (adapte conforme necessário)
-            move_to_send = self.tabuleiro.gerar_item_jogada()
+            move_to_send = self.tabuleiro.gerar_item_jogada('move')
             move_to_send['match_status'] = 'next'  # Adicione esta linha para garantir a presença de 'match_status'
             self.dog_server_interface.send_move(move_to_send)
             self.mensagem_label.config(text="Jogada enviada")
@@ -180,6 +180,7 @@ class JogadorInterface(DogPlayerInterface):
     #         self.atualizar_interface()
     
     def receive_move(self, a_move):
+        print('JOGADA RECEBIDA: ', a_move)
         move_type = a_move.get('type')
         if move_type == 'initial_setup':
             positions = a_move.get('positions', [])
@@ -193,13 +194,14 @@ class JogadorInterface(DogPlayerInterface):
                 self.mensagem_label.config(text="Estado da partida atualizado para 'em andamento'")
                 self.tabuleiro.sortear_turno()
             self.atualizar_interface()
-        elif move_type == 'turno':
+        elif move_type == 'tiro':
             turnos = a_move.get('turno', {})
             self.sincronizar_turno(turnos)
+            self.tabuleiro.receber_jogada(a_move)
+            self.atualizar_interface(True)
         else:
             # Tratar outros tipos de jogadas aqui
-            self.tabuleiro.receber_jogada(a_move)
-            self.atualizar_interface()
+            pass
 
 
     def comprar_base(self):
@@ -211,13 +213,6 @@ class JogadorInterface(DogPlayerInterface):
     def tiro_preciso(self):
         print("Botão Tiro Preciso clicado")  # Log do clique no console
 
-    # def tiro_normal(self):
-    #     print("Botão Tiro Normal clicado")  # Log do clique no console
-    #     mensagem = self.tabuleiro.tiro_normal()
-    #     self.mensagem_label.config(text=mensagem)
-    #     self.atualizar_interface()
-
-
     def tiro_normal(self):
         print("Botão Tiro Normal clicado")
         mensagem = self.tabuleiro.tiro_normal()
@@ -225,20 +220,11 @@ class JogadorInterface(DogPlayerInterface):
         self.atualizar_interface(True)
 
         # Enviar a mudança de turno para o servidor
-        move_to_send = {
-            'type': 'turno',
-            'turno': {
-                'jogador_local_id': self.tabuleiro.jogador_local.id,
-                'jogador_local_turno': self.tabuleiro.jogador_local.informar_turno(),
-                'jogador_remoto_id': self.tabuleiro.jogador_remoto.id,
-                'jogador_remoto_turno': self.tabuleiro.jogador_remoto.informar_turno()
-            },
-            'match_status': 'next'
-        }
+        move_to_send = self.tabuleiro.gerar_item_jogada('tiro', 'next')
         self.dog_server_interface.send_move(move_to_send)
 
-        print(f"Turno do jogador local ({self.tabuleiro.jogador_local.nome}): {self.tabuleiro.jogador_local.informar_turno()}")
-        print(f"Turno do jogador remoto ({self.tabuleiro.jogador_remoto.nome}): {self.tabuleiro.jogador_remoto.informar_turno()}")
+        # print(f"Turno do jogador local ({self.tabuleiro.jogador_local.nome}): {self.tabuleiro.jogador_local.informar_turno()}")
+        # print(f"Turno do jogador remoto ({self.tabuleiro.jogador_remoto.nome}): {self.tabuleiro.jogador_remoto.informar_turno()}")
     
     
     def tiro_forte(self):
@@ -247,16 +233,7 @@ class JogadorInterface(DogPlayerInterface):
         self.atualizar_interface(True)
 
         # Enviar a mudança de turno para o servidor
-        move_to_send = {
-            'type': 'turno',
-            'turno': {
-                'jogador_local_id': self.tabuleiro.jogador_local.id,
-                'jogador_local_turno': self.tabuleiro.jogador_local.informar_turno(),
-                'jogador_remoto_id': self.tabuleiro.jogador_remoto.id,
-                'jogador_remoto_turno': self.tabuleiro.jogador_remoto.informar_turno()
-            },
-            'match_status': 'next'
-        }
+        move_to_send = self.tabuleiro.gerar_item_jogada('tiro', 'next')
         self.dog_server_interface.send_move(move_to_send)
 
     def atualizar_interface(self, tiro_efetuado=False):
@@ -266,7 +243,10 @@ class JogadorInterface(DogPlayerInterface):
         for y in range(3):
             for x in range(5):
                 if (y, x) in self.tabuleiro.campos_acertados_tiro_rodada:
-                    self.board2[y][x].configure(bg='yellow')
+                    if self.tabuleiro.jogador_local.informar_turno():
+                        self.board1[y][x].configure(bg='yellow')
+                    else:
+                        self.board2[y][x].configure(bg='yellow')
                 else:
                     if self.tabuleiro.campo_jogador_local.posicao_tem_base(y, x):
                         self.board1[y][x].configure(bg='green')
@@ -286,7 +266,10 @@ class JogadorInterface(DogPlayerInterface):
 
     def limpar_sinalizador_de_tiro_da_rodada(self):
         for y, x in self.tabuleiro.campos_acertados_tiro_rodada:
-            self.board2[y][x].configure(bg='white')
+            if self.tabuleiro.jogador_local.informar_turno():
+                self.board1[y][x].configure(bg='white')
+            else:
+                self.board2[y][x].configure(bg='white')
         self.tabuleiro.limpar_campos_acertados_tiro_rodada()
 
     #adicionar no diagrama

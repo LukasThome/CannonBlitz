@@ -40,12 +40,12 @@ class Campo:
         if not self.posicao_tem_base(linha, coluna):
             self.posicoes[linha][coluna].set_defesa(True)
             self.bases.append((linha, coluna))
-            print(f"Base adicionada na posição ({linha}, {coluna}) para o jogador {self._id_jogador}")
-            print(f"Estado atual das bases: {self.obter_posicoes_com_base()}")
+            # print(f"Base adicionada na posição ({linha}, {coluna}) para o jogador {self._id_jogador}")
+            # print(f"Estado atual das bases: {self.obter_posicoes_com_base()}")
 
     def remover_base(self, linha, coluna):
         if self.posicao_tem_base(linha, coluna):
             self.posicoes[linha][coluna].set_defesa(False)
             self.bases.remove((linha, coluna))
-            print(f"Base removida na posição ({linha}, {coluna}) para o jogador {self._id_jogador}")
-            print(f"Estado atual das bases: {self.obter_posicoes_com_base()}")
+            # print(f"Base removida na posição ({linha}, {coluna}) para o jogador {self._id_jogador}")
+            # print(f"Estado atual das bases: {self.obter_posicoes_com_base()}")
