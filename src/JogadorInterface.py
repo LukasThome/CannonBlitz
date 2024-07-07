@@ -82,55 +82,6 @@ class JogadorInterface(DogPlayerInterface):
         self.mensagem_label = Label(self.janela_principal, text="", fg="red")
         self.mensagem_label.grid(row=3, column=0, padx=3, pady=3)
 
-    # def clicar_posicao_campoBKP(self, linha, coluna):
-    #     print(f"Clique registrado na linha {linha}, coluna {coluna}")
-
-    #     estado_partida = self.tabuleiro.get_estado()
-
-    #     if estado_partida not in [2, 3]:
-    #         self.mensagem_label.config(text="Aguardando início da partida")
-    #         return
-
-    #     if not self.tabuleiro.jogador_local.informar_turno():
-    #         self.mensagem_label.config(text="Não é seu turno")
-    #         return
-
-    #     if self.tabuleiro.campo_jogador_local.posicao_tem_base(linha, coluna):
-    #         self.mensagem_label.config(text="Posição ocupada")
-    #         print(f"A posição ({linha}, {coluna}) já está ocupada.")
-    #         return
-
-    #     self.tabuleiro.campo_jogador_local.adicionar_base(linha, coluna)
-    #     print(f"Base adicionada na posição ({linha}, {coluna}) pelo jogador local")
-    #     print(f"Bases ocupadas: {self.tabuleiro.campo_jogador_local.obter_posicoes_com_base()}")
-    #     print(f"Quantidade de bases: {self.tabuleiro.campo_jogador_local.pega_quantidade_bases()}")
-    #     print(f"Informações do jogador local: {vars(self.tabuleiro.jogador_local)}")
-    #     print(f"Informações do jogador remoto: {vars(self.tabuleiro.jogador_remoto)}")
-    #     print(f"Estado da partida: {self.tabuleiro.get_estado()}")
-    #     self.atualizar_interface()
-
-    #     if estado_partida == 2:
-    #         if self.tabuleiro.campo_jogador_local.pega_quantidade_bases() == 5:
-    #             self.tabuleiro.jogador_local.preencheu_bases = True
-    #             self.mensagem_label.config(text="Você adicionou todas as suas bases. Aguarde o outro jogador.")
-    #             move_to_send = {
-    #                 'type': 'colocar_bases',
-    #                 'positions': self.tabuleiro.campo_jogador_local.obter_posicoes_com_base(),
-    #                 'match_status': 'next'  # Adicione esta linha para garantir a presença de 'match_status'
-    #             }
-    #             self.dog_server_interface.send_move(move_to_send)
-    #             if self.tabuleiro.jogador_remoto.preencheu_bases:
-    #                 self.tabuleiro.set_estado(3)
-    #                 self.mensagem_label.config(text="Estado da partida atualizado para 'em andamento'")
-    #         else:
-    #             self.mensagem_label.config(text="Continue até adicionar 5 bases")
-    #     elif estado_partida == 3:
-    #         # Enviar jogada para o DOG (adapte conforme necessário)
-    #         move_to_send = self.tabuleiro.gerar_item_jogada()
-    #         move_to_send['match_status'] = 'next'  # Adicione esta linha para garantir a presença de 'match_status'
-    #         self.dog_server_interface.send_move(move_to_send)
-    #         self.mensagem_label.config(text="Jogada enviada")
-
     def clicar_posicao_campo(self, linha, coluna):
         vez_jogador_local = self.tabuleiro.jogador_local.informar_turno()
         if vez_jogador_local:
@@ -223,8 +174,7 @@ class JogadorInterface(DogPlayerInterface):
         self.mensagem_label.config(text=mensagem)
         self.atualizar_interface([(linha, coluna)])
 
-        # or partida em andamento
-        if mensagem != 'Não é seu turno':
+        if mensagem != 'Não é seu turno' and mensagem != "A partida deve estar em andamento":
             move_to_send = {
                 'type': 'tiro_normal',
                 'linha': linha,

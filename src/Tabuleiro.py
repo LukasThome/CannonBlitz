@@ -126,17 +126,16 @@ class Tabuleiro:
             self.campo_jogador_local.remover_base_atingida(linha,coluna)
             self.jogador_remoto.aumentar_saldo_jogador(1)
             self.canhao_jogador_remoto.resetar_precisao_tiro_normal()
-            jogador_remoto_vencedor = self.verificar_jogada_vencedora(self.campo_jogador_local, self.jogador_remoto)
-            if jogador_remoto_vencedor:
+            jogada_vencedora = self.verificar_jogada_vencedora(self.campo_jogador_local, self.jogador_remoto)
+            if jogada_vencedora:
                 mensagem = "Jogador remoto vencedor"
                 return mensagem
-            self.jogador_local.set_turno(True)
-            self.jogador_remoto.set_turno(False)
         else:
+            self.canhao_jogador_remoto.calibrar_precisao()
             mensagem = "Jogador remoto nao acertou nenhuma base"
-            self.jogador_local.set_turno(True)
-            self.jogador_remoto.set_turno(False)
-            return mensagem
+        self.jogador_local.set_turno(True)
+        self.jogador_remoto.set_turno(False)
+        return mensagem
 
     def verificar_tiro_forte(self, posicoes_atingidas):
         self.jogador_remoto.diminuir_saldo(3)
