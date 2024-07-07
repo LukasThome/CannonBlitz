@@ -139,6 +139,8 @@ class Tabuleiro:
             if jogada_vencedora:
                 mensagem = "Jogador remoto vencedor"
                 return mensagem
+            else:
+                mensagem = "Jogador remoto acertou uma base"
         else:
             self.canhao_jogador_remoto.calibrar_precisao()
             mensagem = "Jogador remoto nao acertou nenhuma base"
