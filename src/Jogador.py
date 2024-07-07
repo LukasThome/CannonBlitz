@@ -50,3 +50,9 @@ class Jogador:
     
     def get_nome(self):
         return self.nome
+
+    def set_comprando_base(self, valor):
+            self.comprando_base = valor
+            
+    def get_comprando_base(self):
+        return self.comprando_base

@@ -176,6 +176,8 @@ class Tabuleiro:
         jogada = a_move.get('type')
         if jogada == 'colocar_bases':
             self.verificar_bases_colocadas_pelo_jogador(a_move)
+        elif jogada == 'comprar_base':
+            return self.verificar_base_comprada(a_move.get('linha'), a_move.get('coluna'))
         elif jogada == 'tiro_normal':
             return self.verificar_tiro_normal(a_move.get('linha'), a_move.get('coluna'))
         elif jogada == 'tiro_preciso':
@@ -193,8 +195,14 @@ class Tabuleiro:
         if preencheu_bases:
             self.set_estado(3)
 
-    def verificar_base_comprada(self, linha, coluna):#implementar
-        pass
+    def verificar_base_comprada(self, linha, coluna):
+        posicao = self.campo_jogador_remoto.pega_posicao(linha, coluna)
+        posicao.set_defesa(True)
+        self.jogador_remoto.diminuir_saldo(2)
+        mensagem = "Jogador remoto comprou uma base"
+        self.jogador_local.set_turno(True)
+        self.jogador_remoto.set_turno(False)
+        return mensagem
 
     def verificar_tiro_normal(self, linha, coluna):
         posicao_tem_base = self.campo_jogador_local.posicao_tem_base(linha,coluna)
@@ -305,9 +313,11 @@ class Tabuleiro:
                         self.campo_jogador_local.adicionar_base(linha, coluna)
                         mensagem = "Base adicionada"
                 case 3:
-                    if self.jogador_local.comprando_base:
+                    if self.jogador_local.get_comprando_base():
                         self.campo_jogador_local.adicionar_base(linha, coluna)
-                        mensagem = "Base adicionada"
+                        mensagem = "Base comprada adicionada"
+                        self.jogador_local.set_turno(False)
+                        self.jogador_remoto.set_turno(True)
                     else:
                         mensagem = "Ação inválida"    
         return mensagem
@@ -323,12 +333,11 @@ class Tabuleiro:
             mensagem = "A partida deve estar em andamento"
         elif not self.informar_turno():
             mensagem = "Não é seu turno"
-        elif not self.saldo_suficiente(2):  # Supondo que o custo da base seja 2
+        elif not self.saldo_suficiente(2):
             mensagem = "Saldo insuficiente"
         else:
             self.diminuir_saldo_jogador(2)
             mensagem = "Clique na posição desejada para colocar a base"
-        
         return mensagem
 
     def inicializar(self): #Provavelmente nao ira precisar
@@ -351,3 +360,9 @@ class Tabuleiro:
             self.jogador_local.set_turno(True)
             self.jogador_remoto.set_turno(False)
         # print(f"Turno trocado. Turno do jogador local: {self.jogador_local.informar_turno()}, Turno do jogador remoto: {self.jogador_remoto.informar_turno()}")
+
+    def set_comprando_base(self, valor):
+        self.jogador_local.comprando_base = valor
+        
+    def get_comprando_base(self):
+        return self.jogador_local.comprando_base

@@ -36,7 +36,6 @@ class JogadorInterface(DogPlayerInterface):
         self.saldo_label = Label(control_frame, text=f"Saldo: {saldo_atual}")
         self.saldo_label.grid(row=1, column=0, padx=3, pady=3)
 
-    
         self.comprar_base_button = Button(control_frame, text="Comprar Base $2", command=self.comprar_base, state=ACTIVE)
         self.comprar_base_button.grid(row=2, column=0, padx=3, pady=3)
 
@@ -111,11 +110,19 @@ class JogadorInterface(DogPlayerInterface):
                                 mensagem = "Partida em andamento. Aguarde a vez do outro jogador."
                     else:
                         mensagem = "Continue até adicionar 5 bases"
-                # elif status_partida == 3:
-                #     move_to_send = self.tabuleiro.gerar_item_jogada()
-                #     move_to_send['match_status'] = 'next'  # Adicione esta linha para garantir a presença de 'match_status'
-                #     self.dog_server_interface.send_move(move_to_send)
-                #     self.mensagem_label.config(text="Jogada enviada")
+                elif status_partida == 3 and mensagem == 'Base comprada adicionada':
+                    self.comprar_base_button.config(state=ACTIVE)
+                    self.tiro_preciso_button.config(state=ACTIVE)
+                    self.base_button.config(state=ACTIVE)
+                    self.tiro_forte_button.config(state=ACTIVE)
+                    self.tabuleiro.set_comprando_base(False)
+                    move_to_send = {
+                        'type': 'comprar_base',
+                        'linha': linha,
+                        'coluna': coluna,
+                        'match_status': 'next'
+                    }
+                    self.dog_server_interface.send_move(move_to_send)
         else:
             mensagem = "Não é seu turno"
 
@@ -127,7 +134,7 @@ class JogadorInterface(DogPlayerInterface):
             if status_inicio.get_code() == "2":
                 jogadores = status_inicio.get_players()
                 if len(jogadores) >= 2:
-                    message = status_inicio.get_message()  # Mensagem de início da partida
+                    message = status_inicio.get_message()
                     if message == 'Partida iniciada':
                         self.mensagem_label.config(text="Partida iniciada, coloque suas bases")
                     else:
@@ -160,8 +167,6 @@ class JogadorInterface(DogPlayerInterface):
 
     def receive_move(self, a_move):
             mensagem = self.tabuleiro.receber_jogada(a_move)
-            # status_partida = self.tabuleiro.get_estado()
-            # if status_partida == 3 :
             if mensagem is not None:
                 self.mensagem_label.config(text=mensagem)
             else:     
@@ -177,12 +182,15 @@ class JogadorInterface(DogPlayerInterface):
                 return self.atualizar_interface([tuple(pos) for pos in a_move.get('posicoes_atingidas')])
             else:
                 self.atualizar_interface()
-            # else:
-                # self.atualizar_interface()
             
     def comprar_base(self):
-        print("Botão Comprar Base clicado")  # Log do clique no console
         mensagem = self.tabuleiro.comprar_base()
+        if mensagem == 'Clique na posição desejada para colocar a base':
+            self.comprar_base_button.config(state=DISABLED)
+            self.tiro_preciso_button.config(state=DISABLED)
+            self.base_button.config(state=DISABLED)
+            self.tiro_forte_button.config(state=DISABLED)
+            self.tabuleiro.set_comprando_base(True)
         self.mensagem_label.config(text=mensagem)
         self.atualizar_interface()
 
