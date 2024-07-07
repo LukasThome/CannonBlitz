@@ -60,7 +60,7 @@ class Tabuleiro:
         if partida_andamento:
             vez_jogador_local = self.jogador_local.informar_turno()
             if vez_jogador_local:
-                saldo_suficiente = self.jogador_local.saldo_suficiente(3)
+                saldo_suficiente = self.jogador_local.saldo_suficiente(1)
                 if saldo_suficiente:  
                     self.jogador_local.set_turno(False)
                     self.jogador_remoto.set_turno(True)
@@ -126,7 +126,6 @@ class Tabuleiro:
         return self.jogador_local.get_nome()
 
     def comecar_partida(self, jogadores):
-        print(jogadores)
         self.jogador_local.definir_nome(jogadores[0][0])
         self.jogador_local.definir_id(jogadores[0][1])
         self.jogador_remoto.definir_nome(jogadores[1][0])
@@ -359,7 +358,6 @@ class Tabuleiro:
         else:
             self.jogador_local.set_turno(True)
             self.jogador_remoto.set_turno(False)
-        # print(f"Turno trocado. Turno do jogador local: {self.jogador_local.informar_turno()}, Turno do jogador remoto: {self.jogador_remoto.informar_turno()}")
 
     def set_comprando_base(self, valor):
         self.jogador_local.comprando_base = valor
