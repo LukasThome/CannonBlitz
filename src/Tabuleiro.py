@@ -177,9 +177,9 @@ class Tabuleiro:
         if jogada == 'colocar_bases':
             self.verificar_bases_colocadas_pelo_jogador(a_move)
         elif jogada == 'tiro_normal':
-            return self.verificar_tiro_normal(a_move)
+            return self.verificar_tiro_normal(a_move.get('linha'), a_move.get('coluna'))
         elif jogada == 'tiro_preciso':
-            return self.verificar_tiro_preciso(a_move)
+            return self.verificar_tiro_preciso(a_move.get('linha'), a_move.get('coluna'))
         elif jogada == 'tiro_forte':
             return self.verificar_tiro_forte(a_move.get('posicoes_atingidas'))
 
@@ -196,9 +196,7 @@ class Tabuleiro:
     def verificar_base_comprada(self, linha, coluna):#implementar
         pass
 
-    def verificar_tiro_normal(self, a_move):
-        linha = a_move.get('linha')
-        coluna = a_move.get('coluna')
+    def verificar_tiro_normal(self, linha, coluna):
         posicao_tem_base = self.campo_jogador_local.posicao_tem_base(linha,coluna)
         if posicao_tem_base:
             self.campo_jogador_local.remover_base_atingida(linha,coluna)
@@ -238,9 +236,7 @@ class Tabuleiro:
         self.jogador_remoto.set_turno(False)
         return mensagem
 
-    def verificar_tiro_preciso(self, a_move):
-        linha = a_move.get('linha')
-        coluna = a_move.get('coluna')
+    def verificar_tiro_preciso(self, linha, coluna):
         self.jogador_remoto.diminuir_saldo(1)
         posicao_tem_base = self.campo_jogador_local.posicao_tem_base(linha,coluna)
         if posicao_tem_base:
