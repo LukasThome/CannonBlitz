@@ -14,6 +14,8 @@ class JogadorInterface(DogPlayerInterface):
         self.janela_principal = Tk()
         self.tabuleiro = Tabuleiro()
         self.desenhar_janela_principal()
+        self.janela_principal.geometry("380x350")
+        self.janela_principal.resizable(False, False)
         self.janela_principal.title("Cannon Blitz")
 
         player_name = simpledialog.askstring(title="Identificação do jogador", prompt="Qual o seu nome?")
@@ -82,7 +84,7 @@ class JogadorInterface(DogPlayerInterface):
                 row_buttons.append(button)
             self.board1.append(row_buttons)
 
-        self.mensagem_label = Label(self.janela_principal, text="", fg="red")
+        self.mensagem_label = Label(self.janela_principal, text="Aguardando início da partida", fg="red")
         self.mensagem_label.grid(row=3, column=0, padx=3, pady=3)
 
     def clicar_posicao_campo(self, linha, coluna):
@@ -111,7 +113,7 @@ class JogadorInterface(DogPlayerInterface):
                                 mensagem = "Partida em andamento. Aguarde a vez do outro jogador."
                     else:
                         mensagem = "Continue até adicionar 5 bases"
-                elif status_partida == 3 and mensagem == 'Base comprada adicionada':
+                elif status_partida == 3 and mensagem == 'Base comprada adicionada! Aguarde o turno do outro jogador.':
                     self.comprar_base_button.config(state=ACTIVE)
                     self.tiro_preciso_button.config(state=ACTIVE)
                     self.base_button.config(state=ACTIVE)
@@ -126,8 +128,7 @@ class JogadorInterface(DogPlayerInterface):
                     self.dog_server_interface.send_move(move_to_send)
         else:
             mensagem = "Não é seu turno"
-
-        self.mensagem_label.config(text = mensagem)
+        self.showinfo(mensagem)
 
     def iniciar_partida(self):
         if self.tabuleiro.estado == 1:
@@ -137,19 +138,19 @@ class JogadorInterface(DogPlayerInterface):
                 if len(jogadores) >= 2:
                     message = status_inicio.get_message()
                     if message == 'Partida iniciada':
-                        self.mensagem_label.config(text="Partida iniciada, coloque suas bases")
+                        self.showinfo("Partida iniciada, coloque suas bases")
                     else:
-                        self.mensagem_label.config(text=message)
+                        self.showinfo(message)
                     self.tabuleiro.comecar_partida(jogadores)
                     self.tabuleiro.set_estado(2)
                     self.jogador_label.config(text=f"Nome: {self.tabuleiro.get_nome_jogador_local()}")
                     self.atualizar_interface()
                 else:
-                    self.mensagem_label.config(text="Erro: jogadores insuficientes")
+                    self.showinfo("Erro: jogadores insuficientes")
             else:
-                self.mensagem_label.config(text="Erro ao iniciar partida: " + status_inicio.get_message())
+                self.showinfo("Erro ao iniciar partida: " + status_inicio.get_message())
         else:
-            self.mensagem_label.config(text="Você já está em uma partida")
+            self.showinfo("Você já está em uma partida")
 
     def receive_start(self, start_status):
         jogadores = start_status.get_players()
@@ -159,22 +160,22 @@ class JogadorInterface(DogPlayerInterface):
             self.jogador_label.config(text=f"Nome: {self.tabuleiro.get_nome_jogador_local()}")
             message = start_status.get_message()
             if message == 'Partida iniciada':
-                self.mensagem_label.config(text="Partida iniciada, coloque suas bases")
+                self.showinfo("Partida iniciada, coloque suas bases")
             else:
-                self.mensagem_label.config(text=message)
+                self.showinfo(message)
             self.atualizar_interface()
         else:
-            self.mensagem_label.config(text="Erro: jogadores insuficientes")
+            self.showinfo("Erro: jogadores insuficientes")
 
     def receive_move(self, a_move):
             mensagem = self.tabuleiro.receber_jogada(a_move)
             if mensagem is not None:
-                self.mensagem_label.config(text=mensagem)
+                self.showinfo(mensagem)
             else:     
                 if self.tabuleiro.jogador_local.informar_turno():
-                    self.mensagem_label.config(text="Partida em andamento. É a sua vez.")
+                    self.showinfo("Partida em andamento. É a sua vez.")
                 else:
-                    self.mensagem_label.config(text="Partida em andamento. Aguarde a vez do outro jogador.")
+                    self.showinfo("Partida em andamento. Aguarde a vez do outro jogador.")
             move_type = a_move.get('type')
             if move_type == 'tiro_normal' or move_type == 'tiro_preciso':
                 return self.atualizar_interface([(a_move.get('linha'), a_move.get('coluna'))])
@@ -191,12 +192,12 @@ class JogadorInterface(DogPlayerInterface):
             self.base_button.config(state=DISABLED)
             self.tiro_forte_button.config(state=DISABLED)
             self.tabuleiro.set_comprando_base(True)
-        self.mensagem_label.config(text=mensagem)
+        self.showinfo(mensagem)
         self.atualizar_interface()
 
     def tiro_normal(self):
         mensagem,linha,coluna = self.tabuleiro.tiro_normal()
-        self.mensagem_label.config(text=mensagem)
+        self.showinfo(mensagem)
         self.atualizar_interface([(linha, coluna)])
 
         if mensagem != 'Não é seu turno' and mensagem != "A partida deve estar em andamento":
@@ -210,7 +211,7 @@ class JogadorInterface(DogPlayerInterface):
             
     def tiro_preciso(self):
         mensagem,linha,coluna = self.tabuleiro.tiro_preciso()
-        self.mensagem_label.config(text=mensagem)
+        self.showinfo(mensagem)
         self.atualizar_interface([(linha, coluna)])
 
         if mensagem != "A partida deve estar em andamento" and mensagem != 'Não é seu turno' and mensagem != 'Saldo insuficiente':
@@ -224,7 +225,7 @@ class JogadorInterface(DogPlayerInterface):
 
     def tiro_forte(self):
         mensagem, posicoes_atingidas = self.tabuleiro.tiro_forte()
-        self.mensagem_label.config(text=mensagem)
+        self.showinfo(mensagem)
         self.atualizar_interface(posicoes_atingidas)
         if mensagem != "A partida deve estar em andamento" and mensagem != 'Não é seu turno' and mensagem != 'Saldo insuficiente':
             move_to_send = {
@@ -281,5 +282,8 @@ class JogadorInterface(DogPlayerInterface):
 
     def receive_withdrawal_notification(self):
         self.tabuleiro.receber_desistencia()
-        self.mensagem_label.config(text="Seu oponente desistiu!")
+        self.showinfo("Seu oponente desistiu!")
         self.atualizar_interface()
+        
+    def showinfo(self, mensagem):
+        self.mensagem_label.config(text=mensagem)
