@@ -40,3 +40,6 @@ class Jogador:
 
     def definir_jogador_vencedor(self):
         self.vencedor = True
+    
+    def get_nome(self):
+        return self.nome

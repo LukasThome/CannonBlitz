@@ -28,22 +28,26 @@ class JogadorInterface(DogPlayerInterface):
         Label(self.janela_principal, text="Cannon Blitz").grid(row=1, column=0)
         control_frame = Frame(self.janela_principal)
         control_frame.grid(row=0, column=1, rowspan=3, padx=10, pady=10)
+        
+        self.jogador_label = Label(control_frame, text=f"")
+        self.jogador_label.grid(row=0, column=0, padx=3, pady=3)
 
         saldo_atual = self.tabuleiro.jogador_local.get_saldo()
         self.saldo_label = Label(control_frame, text=f"Saldo: {saldo_atual}")
-        self.saldo_label.grid(row=0, column=0, padx=3, pady=3)
+        self.saldo_label.grid(row=1, column=0, padx=3, pady=3)
 
+    
         self.comprar_base_button = Button(control_frame, text="Comprar Base $2", command=self.comprar_base, state=ACTIVE)
-        self.comprar_base_button.grid(row=1, column=0, padx=3, pady=3)
+        self.comprar_base_button.grid(row=2, column=0, padx=3, pady=3)
 
         self.tiro_preciso_button = Button(control_frame, text="Tiro Preciso $1", command=self.tiro_preciso, state=ACTIVE)
-        self.tiro_preciso_button.grid(row=2, column=0, padx=3, pady=3)
+        self.tiro_preciso_button.grid(row=3, column=0, padx=3, pady=3)
 
         self.base_button = Button(control_frame, text="Tiro Normal", command=self.tiro_normal, state=ACTIVE)
-        self.base_button.grid(row=3, column=0, padx=3, pady=3)
+        self.base_button.grid(row=4, column=0, padx=3, pady=3)
 
         self.tiro_forte_button = Button(control_frame, text="Tiro Forte $3", command=self.tiro_forte, state=ACTIVE)
-        self.tiro_forte_button.grid(row=4, column=0, padx=3, pady=3)
+        self.tiro_forte_button.grid(row=5, column=0, padx=3, pady=3)
 
         # Menu
         self.menu = Menu(self.janela_principal)
@@ -60,7 +64,7 @@ class JogadorInterface(DogPlayerInterface):
         for i in range(3):
             row_buttons = []
             for j in range(5):
-                button = Button(campo_jogador_remoto, width=5, height=2, command=lambda i=i, j=j: self.clicar_posicao_campo(i, j))
+                button = Button(campo_jogador_remoto, width=5, height=2, state='disabled')
                 button.grid(row=i, column=j, padx=1, pady=1)
                 row_buttons.append(button)
             self.board2.append(row_buttons)
@@ -75,7 +79,6 @@ class JogadorInterface(DogPlayerInterface):
             for j in range(5):
                 button = Button(campo_jogador_local, width=5, height=2, command=lambda i=i, j=j: self.clicar_posicao_campo(i, j))
                 button.grid(row=i, column=j, padx=1, pady=1)
-                button.configure(bg='green')  # Define o fundo do botão como verde
                 row_buttons.append(button)
             self.board1.append(row_buttons)
 
@@ -102,7 +105,12 @@ class JogadorInterface(DogPlayerInterface):
                         self.dog_server_interface.send_move(move_to_send)
                         if self.tabuleiro.jogador_remoto.preencheu_bases:
                             self.tabuleiro.set_estado(3)
-                            mensagem ="Partida em andamento"
+                            print('vez jogador LOCAL: ', self.tabuleiro.jogador_local.informar_turno())
+                            print('vez jogador REMOTO: ', self.tabuleiro.jogador_remoto.informar_turno())
+                            if self.tabuleiro.jogador_local.informar_turno():
+                                mensagem = "Partida em andamento. É a sua vez."
+                            else:
+                                mensagem = "Partida em andamento. Aguarde a vez do outro jogador."
                     else:
                         mensagem = "Continue até adicionar 5 bases"
                 # elif status_partida == 3:
@@ -123,8 +131,9 @@ class JogadorInterface(DogPlayerInterface):
                 if len(jogadores) >= 2:
                     message = status_inicio.get_message()  # Mensagem de início da partida
                     self.mensagem_label.config(text=message)  # Exibe a mensagem de início da partida
-                    self.tabuleiro.comecar_partida(jogadores, status_inicio.get_local_id())
-                    self.tabuleiro.set_estado(2)  # Define o estado da partida como 2 (preparação)
+                    self.tabuleiro.comecar_partida(jogadores)
+                    self.tabuleiro.set_estado(2)
+                    self.jogador_label.config(text=f"Nome: {self.tabuleiro.get_nome_jogador_local()}")
                     self.atualizar_interface()
                 else:
                     self.mensagem_label.config(text="Erro: jogadores insuficientes")
@@ -136,9 +145,9 @@ class JogadorInterface(DogPlayerInterface):
     def receive_start(self, start_status):
         jogadores = start_status.get_players()
         if len(jogadores) >= 2:
-            jogador_local_id = start_status.get_local_id()
-            self.tabuleiro.comecar_partida(jogadores, jogador_local_id)
-            self.tabuleiro.set_estado(2)  # Define o estado da partida como 2 (preparação)
+            self.tabuleiro.comecar_partida(jogadores)
+            self.tabuleiro.set_estado(2)
+            self.jogador_label.config(text=f"Nome: {self.tabuleiro.get_nome_jogador_local()}")
             message = start_status.get_message()
             self.mensagem_label.config(text=message)
             self.atualizar_interface()
@@ -146,10 +155,18 @@ class JogadorInterface(DogPlayerInterface):
             self.mensagem_label.config(text="Erro: jogadores insuficientes")
 
     def receive_move(self, a_move):
-            self.tabuleiro.receber_jogada(a_move)
+            mensagem = self.tabuleiro.receber_jogada(a_move)
             status_partida = self.tabuleiro.get_estado()
             if status_partida == 3:
-                self.mensagem_label.config(text="Partida em andamento")
+                if mensagem is not None:
+                    self.mensagem_label.config(text=mensagem)
+                else:     
+                    print('vez jogador LOCAL: ', self.tabuleiro.jogador_local.informar_turno())
+                    print('vez jogador REMOTO: ', self.tabuleiro.jogador_remoto.informar_turno())
+                    if self.tabuleiro.jogador_local.informar_turno():
+                        self.mensagem_label.config(text="Partida em andamento. É a sua vez.")
+                    else:
+                        self.mensagem_label.config(text="Partida em andamento. Aguarde a vez do outro jogador.")
                 move_type = a_move.get('type')
                 if move_type == 'tiro_normal' or move_type == 'tiro_preciso':
                     return self.atualizar_interface([(a_move.get('linha'), a_move.get('coluna'))])

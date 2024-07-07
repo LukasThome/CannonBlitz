@@ -21,6 +21,7 @@ class Tabuleiro:
         self.canhao_jogador_local = Canhao()
         self.canhao_jogador_remoto = Canhao()
         self.campos_acertados_tiro_rodada = []
+        self.jogador_local_joga_primeiro = False
 
     def tiro_normal(self):
         mensagem = None
@@ -43,7 +44,7 @@ class Tabuleiro:
                         if jogada_vencedora:
                             mensagem += " Você venceu o jogo!"
                     else:
-                        self.canhao_jogador_local.calibrar_precisao()
+                        self.calibrar_precisao_tiro_normal()
                         mensagem = "Você não acertou nenhuma base."
             else:
                 mensagem = "Não é seu turno"
@@ -54,21 +55,29 @@ class Tabuleiro:
 
     def get_estado(self):
         return self.estado
+    
+    def get_nome_jogador_local(self):
+        return self.jogador_local.get_nome()
 
-    def comecar_partida(self, jogadores, id_jogador_local):
+    def comecar_partida(self, jogadores):
+        print(jogadores)
         self.jogador_local.definir_nome(jogadores[0][0])
         self.jogador_local.definir_id(jogadores[0][1])
         self.jogador_remoto.definir_nome(jogadores[1][0])
         self.jogador_remoto.definir_id(jogadores[1][1])
-        if jogadores[0][1] == id_jogador_local:
-            self.jogador_local.set_turno(True)
-            self.jogador_remoto.set_turno(False)
-        else:
-            self.jogador_local.set_turno(False)
-            self.jogador_remoto.set_turno(True)
+        if jogadores[0][2] == '1':
+            self.jogador_local_joga_primeiro = True
+
 
     def set_estado(self, a):
         self.estado = a
+        if a == 3:
+            if self.jogador_local_joga_primeiro:
+                self.jogador_local.set_turno(True)
+                self.jogador_remoto.set_turno(False)
+            else:
+                self.jogador_local.set_turno(False)
+                self.jogador_remoto.set_turno(True)
     
     def informar_turno(self): #AVALIAR SE PODE ESTAR AQUI
         return self.jogador_local.informar_turno()
@@ -177,11 +186,11 @@ class Tabuleiro:
     def pega_campo_jogador_remoto(self):
         return self.campo_jogador_remoto
 
-    def identificar_posicao_atingida(self, Campo_jogador_remoto, Posicao_atingida): #implementar
+    def identificar_posicao_atingida(self, Campo_jogador_remoto, Posicao_atingida): #implementar/estamos usando posicao_tem_base do Campo -> Remover do VP
         pass
 
-    def calibrar_precisao_tiro_normal(self): #Não sei se é necessario estar aqui tambem
-        pass
+    def calibrar_precisao_tiro_normal(self):
+        self.canhao_jogador_local.calibrar_precisao()
 
     def resetar_precisao_tiro_normal(self):
         self.canhao_jogador_local.resetar_precisao_tiro_normal()
