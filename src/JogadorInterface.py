@@ -105,8 +105,6 @@ class JogadorInterface(DogPlayerInterface):
                         self.dog_server_interface.send_move(move_to_send)
                         if self.tabuleiro.jogador_remoto.preencheu_bases:
                             self.tabuleiro.set_estado(3)
-                            print('vez jogador LOCAL: ', self.tabuleiro.jogador_local.informar_turno())
-                            print('vez jogador REMOTO: ', self.tabuleiro.jogador_remoto.informar_turno())
                             if self.tabuleiro.jogador_local.informar_turno():
                                 mensagem = "Partida em andamento. É a sua vez."
                             else:

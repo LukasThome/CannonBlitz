@@ -135,9 +135,9 @@ class Tabuleiro:
             self.jogador_local_joga_primeiro = True
 
 
-    def set_estado(self, a):
-        self.estado = a
-        if a == 3:
+    def set_estado(self, status):
+        self.estado = status
+        if status == 3:
             if self.jogador_local_joga_primeiro:
                 self.jogador_local.set_turno(True)
                 self.jogador_remoto.set_turno(False)
@@ -241,6 +241,7 @@ class Tabuleiro:
     def verificar_tiro_preciso(self, a_move):
         linha = a_move.get('linha')
         coluna = a_move.get('coluna')
+        self.jogador_remoto.diminuir_saldo(1)
         posicao_tem_base = self.campo_jogador_local.posicao_tem_base(linha,coluna)
         if posicao_tem_base:
             self.campo_jogador_local.remover_base_atingida(linha,coluna)
