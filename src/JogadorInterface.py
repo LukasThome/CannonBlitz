@@ -171,6 +171,7 @@ class JogadorInterface(DogPlayerInterface):
                     self.mensagem_label.config(text="Partida em andamento. Aguarde a vez do outro jogador.")
             move_type = a_move.get('type')
             if move_type == 'tiro_normal' or move_type == 'tiro_preciso':
+                print(f"receive_move: linha: {a_move.get('linha')}, coluna: {a_move.get('coluna')}")
                 return self.atualizar_interface([(a_move.get('linha'), a_move.get('coluna'))])
             elif move_type == 'tiro_forte':
                 return self.atualizar_interface([tuple(pos) for pos in a_move.get('posicoes_atingidas')])
@@ -204,7 +205,7 @@ class JogadorInterface(DogPlayerInterface):
         self.mensagem_label.config(text=mensagem)
         self.atualizar_interface([(linha, coluna)])
 
-        if mensagem != 'Não é seu turno' and mensagem != "A partida deve estar em andamento":
+        if mensagem != "A partida deve estar em andamento" and mensagem != 'Não é seu turno' and mensagem != 'Saldo insuficiente':
             move_to_send = {
                 'type': 'tiro_preciso',
                 'linha': linha,
