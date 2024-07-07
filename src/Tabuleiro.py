@@ -21,6 +21,7 @@ class Tabuleiro:
         self.canhao_jogador_local = Canhao()
         self.canhao_jogador_remoto = Canhao()
         self.jogador_local_joga_primeiro = False
+        mensagem = "Aguardando início da partida"
 
     def tiro_normal(self):
         mensagem = None
@@ -91,7 +92,7 @@ class Tabuleiro:
         vez_jogador_local = self.jogador_local.informar_turno()
         saldo_suficiente = self.jogador_local.saldo_suficiente(3)
         if not partida_andamento:
-            mensagem = "A partida deve estar em andamento"
+            mensagem = "A partida deve estar em andamento! Inicie uma partida no menu principal"
         elif not vez_jogador_local:
             mensagem = "Não é seu turno"
         elif not saldo_suficiente:
@@ -108,10 +109,10 @@ class Tabuleiro:
                     self.campo_jogador_remoto.remover_base(linha, coluna)
                     bases_destruidas += 1
             if bases_destruidas == 0:
-                mensagem = "Você não destruiu nenhuma base."
+                mensagem = "Você não destruiu nenhuma base, aguarde o turno do outro jogador"
             else:
                 self.jogador_local.aumentar_saldo_jogador(bases_destruidas)
-                mensagem = f"Você destruiu {bases_destruidas} base(s) adversária(s)!"
+                mensagem = f"Você destruiu {bases_destruidas} base(s) adversária(s)! Aguarde o turno do outro jogador"
                 partida_vencedora = self.verificar_jogada_vencedora(self.campo_jogador_remoto, self.jogador_local)
                 if partida_vencedora:
                     mensagem += " Você venceu o jogo!"
@@ -158,7 +159,7 @@ class Tabuleiro:
         if self.estado == 2:  # Verificar se o estado da partida é 2 (preparação)
             self.campo_jogador_local.adicionar_base(linha, coluna)
             if self.verificar_bases_colocadas():
-                self.estado = 3  # Atualizar estado para 3 (em andame
+                self.estado = 3  # Atualizar estado para 3 (em andamento)
         
     
     def diminuir_saldo_jogador(self, saldo):
@@ -197,7 +198,7 @@ class Tabuleiro:
         posicao = self.campo_jogador_remoto.pega_posicao(linha, coluna)
         posicao.set_defesa(True)
         self.jogador_remoto.diminuir_saldo(2)
-        mensagem = "Jogador remoto comprou uma base"
+        mensagem = "Jogador remoto comprou uma base, sua vez de jogar"
         self.jogador_local.set_turno(True)
         self.jogador_remoto.set_turno(False)
         return mensagem
@@ -213,10 +214,10 @@ class Tabuleiro:
                 mensagem = "Jogador remoto vencedor"
                 return mensagem
             else:
-                mensagem = "Jogador remoto acertou uma base"
+                mensagem = "Jogador remoto acertou uma base sua! Sua vez de jogar"
         else:
             self.canhao_jogador_remoto.calibrar_precisao()
-            mensagem = "Jogador remoto nao acertou nenhuma base"
+            mensagem = "Jogador remoto nao acertou nenhuma base, sua vez de jogar"
         self.jogador_local.set_turno(True)
         self.jogador_remoto.set_turno(False)
         return mensagem
@@ -230,13 +231,13 @@ class Tabuleiro:
                 self.campo_jogador_local.remover_base(linha, coluna)
                 bases_destruidas += 1
         if bases_destruidas == 0:
-            mensagem = "Jogador remoto nao acertou nenhuma base"
+            mensagem = "Jogador remoto nao acertou nenhuma base! Sua vez de jogar"
         else:
             self.jogador_remoto.aumentar_saldo_jogador(bases_destruidas)
-            mensagem = f"Jogador remoto destruiu {bases_destruidas} base(s)!"
+            mensagem = f"Jogador remoto destruiu {bases_destruidas} base(s)! Sua vez de jogar"
             jogador_remoto_vencedor = self.verificar_jogada_vencedora(self.campo_jogador_local, self.jogador_remoto)
             if jogador_remoto_vencedor:
-                mensagem = "Jogador remoto vencedor"
+                mensagem = "Jogador remoto foi o vencedor"
                 return mensagem
         self.jogador_local.set_turno(True)
         self.jogador_remoto.set_turno(False)
@@ -254,10 +255,10 @@ class Tabuleiro:
                 mensagem = "Jogador remoto vencedor"
                 return mensagem
             else:
-                mensagem = "Jogador remoto acertou uma base"
+                mensagem = "Jogador remoto acertou uma base! Sua vez de jogar"
         else:
             self.canhao_jogador_remoto.calibrar_precisao()
-            mensagem = "Jogador remoto nao acertou nenhuma base"
+            mensagem = "Jogador remoto nao acertou nenhuma base! Sua vez de jogar"
         self.jogador_local.set_turno(True)
         self.jogador_remoto.set_turno(False)
         return mensagem
@@ -309,11 +310,11 @@ class Tabuleiro:
                         mensagem = "Você adicionou todas as suas bases. Aguarde o outro jogador."
                     else:
                         self.campo_jogador_local.adicionar_base(linha, coluna)
-                        mensagem = "Base adicionada"
+                        mensagem = "Base adicionada! Clique em outra posição para adicionar outra base."
                 case 3:
                     if self.jogador_local.get_comprando_base():
                         self.campo_jogador_local.adicionar_base(linha, coluna)
-                        mensagem = "Base comprada adicionada"
+                        mensagem = "Base comprada adicionada! Aguarde o turno do outro jogador."
                         self.jogador_local.set_turno(False)
                         self.jogador_remoto.set_turno(True)
                     else:
@@ -328,7 +329,7 @@ class Tabuleiro:
     def comprar_base(self):
         mensagem = ""
         if not self.verificar_partida_andamento():
-            mensagem = "A partida deve estar em andamento"
+            mensagem = "A partida deve estar em andamento! Inicie uma partida no menu principal"
         elif not self.informar_turno():
             mensagem = "Não é seu turno"
         elif not self.saldo_suficiente(2):
