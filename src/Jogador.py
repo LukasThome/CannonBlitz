@@ -7,6 +7,7 @@ class Jogador:
         self.saldo = 5 # Mudar para 0 para release
         self.id = None
         self.preencheu_bases = False
+        self.comprando_base = False
 
     def definir_nome(self, nome):
         self.nome = nome

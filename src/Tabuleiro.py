@@ -243,20 +243,24 @@ class Tabuleiro:
         else:
             return None
 
-    def clicar_posicao_campoBKP(self, linha, coluna): #ainda nao pronta
-        if self.informar_turno():
-            self.ocupar_posicao(linha, coluna)
-            self.diminuir_saldo_jogador(1)
-            return f"Posição {linha}, {coluna} ocupada."
-        else:
-            return "Não é sua vez."
-
     def clicar_posicao_campo(self, linha, coluna):
         if self.campo_jogador_local.posicao_tem_base(linha,coluna):
             mensagem = "Posição ocupada"
         else:
-            self.campo_jogador_local.adicionar_base(linha, coluna)
-            mensagem = "Base adicionada"
+            estado_partida = self.get_estado()
+            match estado_partida:
+                case 2:
+                    if self.campo_jogador_local.pega_quantidade_bases() == 5:
+                        mensagem = "Você adicionou todas as suas bases. Aguarde o outro jogador."
+                    else:
+                        self.campo_jogador_local.adicionar_base(linha, coluna)
+                        mensagem = "Base adicionada"
+                case 3:
+                    if self.jogador_local.comprando_base:
+                        self.campo_jogador_local.adicionar_base(linha, coluna)
+                        mensagem = "Base adicionada"
+                    else:
+                        mensagem = "Ação inválida"    
         return mensagem
 
     def sortear_turno(self):
