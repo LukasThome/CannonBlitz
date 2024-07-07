@@ -14,6 +14,7 @@ class JogadorInterface(DogPlayerInterface):
         self.janela_principal = Tk()
         self.tabuleiro = Tabuleiro()
         self.desenhar_janela_principal()
+        self.janela_principal.title("Cannon Blitz")
 
         player_name = simpledialog.askstring(title="Identificação do jogador", prompt="Qual o seu nome?")
         self.dog_server_interface = DogActor()
@@ -25,7 +26,7 @@ class JogadorInterface(DogPlayerInterface):
 
     def desenhar_janela_principal(self):
         # Painel de Controle
-        Label(self.janela_principal, text="Cannon Blitz").grid(row=1, column=0)
+        #Label(self.janela_principal, text="Cannon Blitz").grid(row=1, column=0)
         control_frame = Frame(self.janela_principal)
         control_frame.grid(row=0, column=1, rowspan=3, padx=10, pady=10)
         
