@@ -130,7 +130,10 @@ class JogadorInterface(DogPlayerInterface):
                 jogadores = status_inicio.get_players()
                 if len(jogadores) >= 2:
                     message = status_inicio.get_message()  # Mensagem de início da partida
-                    self.mensagem_label.config(text=message)  # Exibe a mensagem de início da partida
+                    if message == 'Partida iniciada':
+                        self.mensagem_label.config(text="Partida iniciada, coloque suas bases")
+                    else:
+                        self.mensagem_label.config(text=message)
                     self.tabuleiro.comecar_partida(jogadores)
                     self.tabuleiro.set_estado(2)
                     self.jogador_label.config(text=f"Nome: {self.tabuleiro.get_nome_jogador_local()}")
@@ -149,7 +152,10 @@ class JogadorInterface(DogPlayerInterface):
             self.tabuleiro.set_estado(2)
             self.jogador_label.config(text=f"Nome: {self.tabuleiro.get_nome_jogador_local()}")
             message = start_status.get_message()
-            self.mensagem_label.config(text=message)
+            if message == 'Partida iniciada':
+                self.mensagem_label.config(text="Partida iniciada, coloque suas bases")
+            else:
+                self.mensagem_label.config(text=message)
             self.atualizar_interface()
         else:
             self.mensagem_label.config(text="Erro: jogadores insuficientes")
