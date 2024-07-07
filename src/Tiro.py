@@ -4,4 +4,4 @@ class Tiro:
         self.area_acerto = 0
 
     def atirar(self, posicoes_com_base):
-        raise NotImplementedError("Este método deve ser implementado pelas subclasses")
+        raise NotImplementedError("Este método está implementado pelas subclasses")

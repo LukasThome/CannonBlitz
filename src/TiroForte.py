@@ -1,5 +1,5 @@
 import random
-from Tiro import Tiro  # Certifique-se de importar corretamente a classe Tiro
+from Tiro import Tiro 
 
 class TiroForte(Tiro):
     def __init__(self):
