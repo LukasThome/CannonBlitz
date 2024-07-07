@@ -60,7 +60,7 @@ class JogadorInterface(DogPlayerInterface):
         for i in range(3):
             row_buttons = []
             for j in range(5):
-                button = Button(campo_jogador_remoto, width=5, height=2, command=lambda i=i, j=j: self.clicar_posicao_campo(i, j))
+                button = Button(campo_jogador_remoto, width=5, height=2, state='disabled')
                 button.grid(row=i, column=j, padx=1, pady=1)
                 row_buttons.append(button)
             self.board2.append(row_buttons)
@@ -75,7 +75,6 @@ class JogadorInterface(DogPlayerInterface):
             for j in range(5):
                 button = Button(campo_jogador_local, width=5, height=2, command=lambda i=i, j=j: self.clicar_posicao_campo(i, j))
                 button.grid(row=i, column=j, padx=1, pady=1)
-                button.configure(bg='green')  # Define o fundo do botão como verde
                 row_buttons.append(button)
             self.board1.append(row_buttons)
 
