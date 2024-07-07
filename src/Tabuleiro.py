@@ -132,6 +132,8 @@ class Tabuleiro:
                 return mensagem
             self.jogador_local.set_turno(True)
             self.jogador_remoto.set_turno(False)
+            mensagem = "Jogador remoto destruiu uma base!"
+            return mensagem
         else:
             mensagem = "Jogador remoto nao acertou nenhuma base"
             self.jogador_local.set_turno(True)

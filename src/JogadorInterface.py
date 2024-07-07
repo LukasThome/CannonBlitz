@@ -195,10 +195,13 @@ class JogadorInterface(DogPlayerInterface):
             self.mensagem_label.config(text="Erro: jogadores insuficientes")
 
     def receive_move(self, a_move):
-            self.tabuleiro.receber_jogada(a_move)
+            mensagem = self.tabuleiro.receber_jogada(a_move)
             status_partida = self.tabuleiro.get_estado()
             if status_partida == 3:
-                self.mensagem_label.config(text="Partida em andamento")
+                if mensagem is not None:
+                    self.mensagem_label.config(text=mensagem)
+                else:     
+                    self.mensagem_label.config(text="Partida em andamento")
                 move_type = a_move.get('type')
                 if move_type == 'tiro_normal' or move_type == 'tiro_preciso':
                     return self.atualizar_interface([(a_move.get('linha'), a_move.get('coluna'))])
