@@ -11,8 +11,8 @@ class Tabuleiro:
         super().__init__()
         self.jogador_local = Jogador()
         self.jogador_remoto = Jogador()
-        self.jogador_local.definir_nome("Jogador Local")  # Define o nome do jogador
-        self.jogador_remoto.definir_nome("Jogador Remoto")  # Define o nome do jogador
+        # self.jogador_local.definir_nome("Jogador Local")  # Define o nome do jogador
+        # self.jogador_remoto.definir_nome("Jogador Remoto")  # Define o nome do jogador
         self.jogador_local.definir_id(1)         
         self.jogador_remoto.definir_id(2)
         self.estado = 1
@@ -20,7 +20,6 @@ class Tabuleiro:
         self.campo_jogador_remoto = Campo(2)
         self.canhao_jogador_local = Canhao()
         self.canhao_jogador_remoto = Canhao()
-        self.campos_acertados_tiro_rodada = []
         self.jogador_local_joga_primeiro = False
 
     def tiro_normal(self):
