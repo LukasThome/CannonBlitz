@@ -99,22 +99,21 @@ class Tabuleiro:
 
     def receber_jogada(self, a_move):
         jogada = a_move.get('type')
-        if jogada == 'move':
-            player_id = a_move.get('player_id')
-            position = a_move.get('position')
-            # Tratar a jogada aqui (ex: processar um tiro, etc.)
-        elif jogada == 'colocar_bases':
-            positions = a_move.get('positions', [])
-            for pos in positions:
-                linha, coluna = pos
-                self.campo_jogador_remoto.adicionar_base(linha, coluna)
+        if jogada == 'colocar_bases':
+            self.verificar_bases_colocadas_pelo_jogador(a_move)
         elif jogada == 'tiro_normal':
             return self.verificar_tiro_normal(a_move)
         elif jogada == 'tiro_forte':
             return self.verificar_tiro_forte(a_move.get('posicoes_atingidas'))
 
-    def verificar_bases_colocadas_pelo_jogador(self, Bases):#implementar
-        return len(self.campo_jogador_local.obter_posicoes_com_base()) >= 5
+    def verificar_bases_colocadas_pelo_jogador(self, a_move):
+        positions = a_move.get('positions', [])
+        for pos in positions:
+            linha, coluna = pos
+            self.campo_jogador_remoto.adicionar_base(linha, coluna)
+        self.jogador_remoto.preencheu_bases = True
+        if self.jogador_local.preencheu_bases:
+            self.set_estado(3)
 
     def verificar_base_comprada(self, linha, coluna):#implementar
         pass
@@ -233,13 +232,21 @@ class Tabuleiro:
         else:
             return None
 
-    def clicar_posicao_campo(self, linha, coluna): #ainda nao pronta
+    def clicar_posicao_campoBKP(self, linha, coluna): #ainda nao pronta
         if self.informar_turno():
             self.ocupar_posicao(linha, coluna)
             self.diminuir_saldo_jogador(1)
             return f"Posição {linha}, {coluna} ocupada."
         else:
             return "Não é sua vez."
+
+    def clicar_posicao_campo(self, linha, coluna):
+        if self.campo_jogador_local.posicao_tem_base(linha,coluna):
+            mensagem = "Posição ocupada"
+        else:
+            self.campo_jogador_local.adicionar_base(linha, coluna)
+            mensagem = "Base adicionada"
+        return mensagem
 
     def sortear_turno(self):
         turno = random.choice([True, False])
