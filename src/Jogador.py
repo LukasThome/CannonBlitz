@@ -38,6 +38,12 @@ class Jogador:
     def set_vencedor(self):
         self.vencedor = True
 
+    def get_jogador_preencheu_bases(self):
+        return self.preencheu_bases
+    
+    def set_jogador_preencheu_bases(self):
+        self.preencheu_bases = True
+
     def definir_jogador_vencedor(self):
         self.vencedor = True
     

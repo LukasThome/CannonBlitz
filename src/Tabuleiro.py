@@ -120,8 +120,9 @@ class Tabuleiro:
         for pos in positions:
             linha, coluna = pos
             self.campo_jogador_remoto.adicionar_base(linha, coluna)
-        self.jogador_remoto.preencheu_bases = True
-        if self.jogador_local.preencheu_bases:
+        self.jogador_remoto.set_jogador_preencheu_bases()
+        preencheu_bases = self.jogador_local.get_jogador_preencheu_bases()
+        if preencheu_bases:
             self.set_estado(3)
 
     def verificar_base_comprada(self, linha, coluna):#implementar
@@ -284,13 +285,11 @@ class Tabuleiro:
         pass
 
     def receber_desistencia(self):
-        pass
-
+        self.set_estado(4)
 
     def saldo_suficiente(self, valor):
         return self.jogador_local.saldo_suficiente(valor)
-    
-    
+
     def trocar_turno(self):
         if self.jogador_local.informar_turno():
             self.jogador_local.set_turno(False)
