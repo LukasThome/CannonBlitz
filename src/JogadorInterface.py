@@ -156,35 +156,30 @@ class JogadorInterface(DogPlayerInterface):
 
     def receive_move(self, a_move):
             mensagem = self.tabuleiro.receber_jogada(a_move)
-            status_partida = self.tabuleiro.get_estado()
-            if status_partida == 3:
-                if mensagem is not None:
-                    self.mensagem_label.config(text=mensagem)
-                else:     
-                    print('vez jogador LOCAL: ', self.tabuleiro.jogador_local.informar_turno())
-                    print('vez jogador REMOTO: ', self.tabuleiro.jogador_remoto.informar_turno())
-                    if self.tabuleiro.jogador_local.informar_turno():
-                        self.mensagem_label.config(text="Partida em andamento. É a sua vez.")
-                    else:
-                        self.mensagem_label.config(text="Partida em andamento. Aguarde a vez do outro jogador.")
-                move_type = a_move.get('type')
-                if move_type == 'tiro_normal' or move_type == 'tiro_preciso':
-                    return self.atualizar_interface([(a_move.get('linha'), a_move.get('coluna'))])
-                elif move_type == 'tiro_forte':
-                    return self.atualizar_interface([tuple(pos) for pos in a_move.get('posicoes_atingidas')])
+            # status_partida = self.tabuleiro.get_estado()
+            # if status_partida == 3 :
+            if mensagem is not None:
+                self.mensagem_label.config(text=mensagem)
+            else:     
+                if self.tabuleiro.jogador_local.informar_turno():
+                    self.mensagem_label.config(text="Partida em andamento. É a sua vez.")
                 else:
-                    self.atualizar_interface()
+                    self.mensagem_label.config(text="Partida em andamento. Aguarde a vez do outro jogador.")
+            move_type = a_move.get('type')
+            if move_type == 'tiro_normal' or move_type == 'tiro_preciso':
+                return self.atualizar_interface([(a_move.get('linha'), a_move.get('coluna'))])
+            elif move_type == 'tiro_forte':
+                return self.atualizar_interface([tuple(pos) for pos in a_move.get('posicoes_atingidas')])
             else:
                 self.atualizar_interface()
+            # else:
+                # self.atualizar_interface()
             
     def comprar_base(self):
         print("Botão Comprar Base clicado")  # Log do clique no console
         mensagem = self.tabuleiro.comprar_base()
         self.mensagem_label.config(text=mensagem)
         self.atualizar_interface()
-
-    def tiro_preciso(self):
-        print("Botão Tiro Preciso clicado")  # Log do clique no console
 
     def tiro_normal(self):
         mensagem,linha,coluna = self.tabuleiro.tiro_normal()
@@ -194,6 +189,20 @@ class JogadorInterface(DogPlayerInterface):
         if mensagem != 'Não é seu turno' and mensagem != "A partida deve estar em andamento":
             move_to_send = {
                 'type': 'tiro_normal',
+                'linha': linha,
+                'coluna': coluna,
+                'match_status': 'next'
+            }
+            self.dog_server_interface.send_move(move_to_send)
+            
+    def tiro_preciso(self):
+        mensagem,linha,coluna = self.tabuleiro.tiro_preciso()
+        self.mensagem_label.config(text=mensagem)
+        self.atualizar_interface([(linha, coluna)])
+
+        if mensagem != 'Não é seu turno' and mensagem != "A partida deve estar em andamento":
+            move_to_send = {
+                'type': 'tiro_preciso',
                 'linha': linha,
                 'coluna': coluna,
                 'match_status': 'next'
