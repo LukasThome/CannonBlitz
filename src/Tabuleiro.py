@@ -171,7 +171,7 @@ class Tabuleiro:
     def receber_jogada(self, a_move):
         jogada = a_move.get('type')
         if jogada == 'colocar_bases':
-            self.verificar_bases_colocadas_pelo_jogador(a_move)
+            self.verificar_bases_colocadas_pelo_jogador(a_move.get('positions', []))
         elif jogada == 'comprar_base':
             return self.verificar_base_comprada(a_move.get('linha'), a_move.get('coluna'))
         elif jogada == 'tiro_normal':
@@ -181,8 +181,7 @@ class Tabuleiro:
         elif jogada == 'tiro_forte':
             return self.verificar_tiro_forte(a_move.get('posicoes_atingidas'))
 
-    def verificar_bases_colocadas_pelo_jogador(self, a_move):
-        positions = a_move.get('positions', [])
+    def verificar_bases_colocadas_pelo_jogador(self, positions):
         for pos in positions:
             linha, coluna = pos
             self.campo_jogador_remoto.adicionar_base(linha, coluna)
