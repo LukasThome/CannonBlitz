@@ -199,7 +199,7 @@ class JogadorInterface(DogPlayerInterface):
         self.showinfo(mensagem)
         self.atualizar_interface([(linha, coluna)])
 
-        if mensagem != 'Não é seu turno' and mensagem != "A partida deve estar em andamento":
+        if mensagem != 'Não é seu turno' and mensagem != "A partida deve estar em andamento! Inicie uma partida no menu principal":
             move_to_send = {
                 'type': 'tiro_normal',
                 'linha': linha,
@@ -213,7 +213,7 @@ class JogadorInterface(DogPlayerInterface):
         self.showinfo(mensagem)
         self.atualizar_interface([(linha, coluna)])
 
-        if mensagem != "A partida deve estar em andamento" and mensagem != 'Não é seu turno' and mensagem != 'Saldo insuficiente':
+        if mensagem != "A partida deve estar em andamento! Inicie uma partida no menu principal" and mensagem != 'Não é seu turno' and mensagem != 'Saldo insuficiente':
             move_to_send = {
                 'type': 'tiro_preciso',
                 'linha': linha,
@@ -226,7 +226,7 @@ class JogadorInterface(DogPlayerInterface):
         mensagem, posicoes_atingidas = self.tabuleiro.tiro_forte()
         self.showinfo(mensagem)
         self.atualizar_interface(posicoes_atingidas)
-        if mensagem != "A partida deve estar em andamento" and mensagem != 'Não é seu turno' and mensagem != 'Saldo insuficiente':
+        if mensagem != "A partida deve estar em andamento! Inicie uma partida no menu principal! Inicie uma partida no menu principal" and mensagem != 'Não é seu turno' and mensagem != 'Saldo insuficiente':
             move_to_send = {
                 'type': 'tiro_forte',
                 'posicoes_atingidas': posicoes_atingidas,
