@@ -4,7 +4,9 @@
 
 ## Visão Geral
 
-Cannon Blitz é um jogo estratégico onde os jogadores se revezam para destruir as bases do oponente usando vários tipos de tiros. O objetivo é colocar e defender estrategicamente suas bases enquanto tenta destruir as bases do seu oponente.
+Cannon Blitz é um jogo estratégico onde os jogadores se revezam para destruir as bases do 
+oponente usando vários tipos de tiros. O objetivo é colocar e defender estrategicamente 
+suas bases enquanto tenta destruir as bases do seu oponente.
 
 ## Instruções para Execução
 
