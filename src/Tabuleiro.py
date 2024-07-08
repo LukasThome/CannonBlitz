@@ -11,8 +11,6 @@ class Tabuleiro:
         super().__init__()
         self.jogador_local = Jogador()
         self.jogador_remoto = Jogador()
-        # self.jogador_local.definir_nome("Jogador Local")  # Define o nome do jogador
-        # self.jogador_remoto.definir_nome("Jogador Remoto")  # Define o nome do jogador
         self.jogador_local.definir_id(1)         
         self.jogador_remoto.definir_id(2)
         self.estado = 1
@@ -21,7 +19,6 @@ class Tabuleiro:
         self.canhao_jogador_local = Canhao()
         self.canhao_jogador_remoto = Canhao()
         self.jogador_local_joga_primeiro = False
-        mensagem = "Aguardando início da partida"
 
     def tiro_normal(self):
         mensagem = None
@@ -49,7 +46,7 @@ class Tabuleiro:
             else:
                 mensagem = "Não é seu turno"
         else:
-            mensagem = "A partida deve estar em andamento"
+            mensagem = "A partida deve estar em andamento! Inicie uma partida no menu principal"
 
         return mensagem,linha,coluna
     
@@ -82,7 +79,7 @@ class Tabuleiro:
             else:
                 mensagem = "Não é seu turno"
         else:
-            mensagem = "A partida deve estar em andamento"
+            mensagem = "A partida deve estar em andamento! Inicie uma partida no menu principal"
         return mensagem,linha,coluna
     
     def tiro_forte(self):
