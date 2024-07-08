@@ -106,7 +106,7 @@ class Tabuleiro:
                     self.campo_jogador_remoto.remover_base(linha, coluna)
                     bases_destruidas += 1
             if bases_destruidas == 0:
-                mensagem = "Você não destruiu nenhuma base, aguarde o turno do outro jogador"
+                mensagem = "Você não destruiu nenhuma base,  aguarde o turno do outro jogador"
             else:
                 self.jogador_local.aumentar_saldo_jogador(bases_destruidas)
                 mensagem = f"Você destruiu {bases_destruidas} base(s) adversária(s)! Aguarde o turno do outro jogador"
