@@ -14,8 +14,7 @@ class JogadorInterface(DogPlayerInterface):
         self.janela_principal = Tk()
         self.tabuleiro = Tabuleiro()
         self.desenhar_janela_principal()
-        self.janela_principal.geometry("380x350")
-        self.janela_principal.resizable(False, False)
+        self.janela_principal.geometry("480x350")
         self.janela_principal.title("Cannon Blitz")
 
         player_name = simpledialog.askstring(title="Identificação do jogador", prompt="Qual o seu nome?")
