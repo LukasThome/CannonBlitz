@@ -1,19 +1,94 @@
-# Creating your game
+### README para Cannon Blitz
 
-## 1. Create and activate a virtual environment (in the folder that contains the folders dog and config);
+## Visão Geral
 
-## 2. Execute 'pip install -r requirements.txt' (to install the libraries used by the framework);
+Cannon Blitz é um jogo estratégico onde os jogadores se revezam para destruir as bases do oponente usando vários tipos de tiros. O objetivo é colocar e defender estrategicamente suas bases enquanto tenta destruir as bases do seu oponente.
 
-## 3. Go to folder 'config' and follow the instructions therein;
+## Instruções de Configuração
 
-## 4. DEVELOP YOUR GAME;
+### Abrindo o jogo
 
-## 5. Execute 'pip freeze > requirements.txt' (to update requirements.txt with the libraries used by your game);
+1. **Crie e ative um ambiente virtual:**
+    - Navegue até a pasta que contém as pastas `dog` e `config`.
+    - Crie um ambiente virtual:
+      ```sh
+      python -m venv venv
+      ```
+    - Ative o ambiente virtual:
+      - No Windows:
+        ```sh
+        .\venv\Scripts\activate
+        ```
+      - No macOS/Linux:
+        ```sh
+        source venv/bin/activate
+        ```
 
-## 6. To distribute your game:
+2. **Instale as bibliotecas necessárias:**
+    - Execute o comando:
+      ```sh
+      pip install -r requirements.txt
+      ```
 
-	 1. Remove the folder of the virtual environment;
-	 1. Compact and send your game with the following instrucions:
-		1. Create and activate a virtual environment;
-		1. Execute pip 'install -r requirements.txt';
-		1. To run the game:  <name_of_your_game>.py.
+3. **Configuração inicial:**
+    - Vá até a pasta `config` e siga as instruções contidas nela.
+
+4. **Desenvolva seu jogo:**
+    - Utilize a estrutura do projeto para desenvolver seu jogo.
+
+5. **Atualize as bibliotecas necessárias:**
+    - Após desenvolver o jogo, execute:
+      ```sh
+      pip freeze > requirements.txt
+      ```
+
+### Distribuindo Seu Jogo
+
+1. **Remova a pasta do ambiente virtual:**
+    - Certifique-se de remover a pasta do ambiente virtual (`venv`).
+
+2. **Compacte e envie seu jogo com as seguintes instruções:**
+    - Para o destinatário, siga estas etapas:
+        1. Crie e ative um ambiente virtual:
+            - No Windows:
+              ```sh
+              Set-ExecutionPolicy RemoteSigned
+              ```
+            - Crie e ative o ambiente:
+              ```sh
+              python -m venv venv
+              .\venv\Scripts\activate
+              ```
+        2. Instale as bibliotecas necessárias:
+            ```sh
+            pip install -r requirements.txt
+            ```
+        3. Para executar o jogo:
+            ```sh
+            python <nome_do_seu_jogo>.py
+            ```
+
+## Estrutura do Projeto
+
+- **cannonblitz/**: Contém os arquivos principais do jogo.
+- **src/**: Contém o código-fonte do jogo.
+
+### Exemplo de Uso
+
+```sh
+python cannonblitz.py
+```
+
+Certifique-se de que seu ambiente virtual está ativado e todas as dependências estão instaladas antes de executar o jogo.
+
+### Dependências
+
+As bibliotecas necessárias para executar o jogo estão listadas no arquivo `requirements.txt`. Certifique-se de instalar todas as dependências antes de tentar rodar o jogo.
+
+### Contato
+
+Para quaisquer dúvidas ou suporte, entre em contato com o desenvolvedor através do email suporte@cannonblitz.com.
+
+---
+
+Essa é uma visão geral de como configurar, desenvolver e distribuir o jogo Cannon Blitz. Certifique-se de seguir todos os passos cuidadosamente para garantir que o jogo funcione corretamente.
