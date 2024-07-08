@@ -113,7 +113,8 @@ class Tabuleiro:
                 partida_vencedora = self.verificar_jogada_vencedora(self.campo_jogador_remoto, self.jogador_local)
                 if partida_vencedora:
                     mensagem += " Você venceu o jogo!"
-            self.trocar_turno()
+            self.jogador_local.set_turno(False)
+            self.jogador_remoto.set_turno(True)
         return mensagem, posicoes_atingidas
         
     def get_estado(self):
@@ -147,8 +148,6 @@ class Tabuleiro:
     def ocupar_posicao(self, linha, coluna):
         self.campo_jogador_local.adicionar_base(linha, coluna)
 
-
-    #ADICIONAR NO DIAGRAMA
     def verificar_bases_colocadas(self):
         return len(self.campo_jogador_local.obter_posicoes_com_base()) >= 5
 
@@ -171,7 +170,7 @@ class Tabuleiro:
     def receber_jogada(self, a_move):
         jogada = a_move.get('type')
         if jogada == 'colocar_bases':
-            self.verificar_bases_colocadas_pelo_jogador(a_move)
+            self.verificar_bases_colocadas_pelo_jogador(a_move.get('positions', []))
         elif jogada == 'comprar_base':
             return self.verificar_base_comprada(a_move.get('linha'), a_move.get('coluna'))
         elif jogada == 'tiro_normal':
@@ -181,8 +180,7 @@ class Tabuleiro:
         elif jogada == 'tiro_forte':
             return self.verificar_tiro_forte(a_move.get('posicoes_atingidas'))
 
-    def verificar_bases_colocadas_pelo_jogador(self, a_move):
-        positions = a_move.get('positions', [])
+    def verificar_bases_colocadas_pelo_jogador(self, positions):
         for pos in positions:
             linha, coluna = pos
             self.campo_jogador_remoto.adicionar_base(linha, coluna)
@@ -276,9 +274,6 @@ class Tabuleiro:
     def pega_campo_jogador_remoto(self):
         return self.campo_jogador_remoto
 
-    def identificar_posicao_atingida(self, Campo_jogador_remoto, Posicao_atingida): #implementar/estamos usando posicao_tem_base do Campo -> Remover do VP
-        pass
-
     def calibrar_precisao_tiro_normal(self):
         self.canhao_jogador_local.calibrar_precisao()
 
@@ -318,11 +313,6 @@ class Tabuleiro:
                         mensagem = "Ação inválida"    
         return mensagem
 
-    def sortear_turno(self):
-        turno = random.choice([True, False])
-        self.jogador_local.set_turno(turno)
-        self.jogador_remoto.set_turno(not turno)
-
     def comprar_base(self):
         mensagem = ""
         if not self.verificar_partida_andamento():
@@ -336,25 +326,11 @@ class Tabuleiro:
             mensagem = "Clique na posição desejada para colocar a base"
         return mensagem
 
-    def inicializar(self): #Provavelmente nao ira precisar
-        pass
-
-    def pegar_estadoCampo(self):
-        pass
-
     def receber_desistencia(self):
         self.set_estado(4)
 
     def saldo_suficiente(self, valor):
         return self.jogador_local.saldo_suficiente(valor)
-
-    def trocar_turno(self):
-        if self.jogador_local.informar_turno():
-            self.jogador_local.set_turno(False)
-            self.jogador_remoto.set_turno(True)
-        else:
-            self.jogador_local.set_turno(True)
-            self.jogador_remoto.set_turno(False)
 
     def set_comprando_base(self, valor):
         self.jogador_local.comprando_base = valor

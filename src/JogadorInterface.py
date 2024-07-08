@@ -20,14 +20,12 @@ class JogadorInterface(DogPlayerInterface):
         player_name = simpledialog.askstring(title="Identificação do jogador", prompt="Qual o seu nome?")
         self.dog_server_interface = DogActor()
         message = self.dog_server_interface.initialize(player_name, self)
-        messagebox.showinfo(message=message)  # Mostra mensagem de conexão com o servidor
+        messagebox.showinfo(message=message)
 
         self.janela_principal.mainloop()
-        self.atualizar_interface()  # Atualiza a interface com o saldo inicial
+        self.atualizar_interface()
 
     def desenhar_janela_principal(self):
-        # Painel de Controle
-        #Label(self.janela_principal, text="Cannon Blitz").grid(row=1, column=0)
         control_frame = Frame(self.janela_principal)
         control_frame.grid(row=0, column=1, rowspan=3, padx=10, pady=10)
         
@@ -57,7 +55,6 @@ class JogadorInterface(DogPlayerInterface):
         self.menu.add_cascade(label="Menu", menu=self.game_menu)
         self.game_menu.add_command(label="Iniciar Partida", command=self.iniciar_partida)
 
-        # Campo jogador remoto (agora no topo)
         campo_jogador_remoto = Frame(self.janela_principal)
         campo_jogador_remoto.grid(row=0, column=0, padx=3, pady=3)
         self.board2 = []
@@ -70,7 +67,6 @@ class JogadorInterface(DogPlayerInterface):
                 row_buttons.append(button)
             self.board2.append(row_buttons)
 
-        # Campo jogador local (agora na parte inferior)
         campo_jogador_local = Frame(self.janela_principal)
         campo_jogador_local.grid(row=2, column=0, padx=10, pady=10)
         self.board1 = []
@@ -101,7 +97,7 @@ class JogadorInterface(DogPlayerInterface):
                         move_to_send = {
                             'type': 'colocar_bases',
                             'positions': self.tabuleiro.campo_jogador_local.obter_posicoes_com_base(),
-                            'match_status': 'next'  # Adicione esta linha para garantir a presença de 'match_status'
+                            'match_status': 'next'
                         }
                         self.dog_server_interface.send_move(move_to_send)
                         if self.tabuleiro.jogador_remoto.preencheu_bases:
@@ -131,7 +127,7 @@ class JogadorInterface(DogPlayerInterface):
 
     def iniciar_partida(self):
         if self.tabuleiro.estado == 1:
-            status_inicio = self.dog_server_interface.start_match(2)  # Inicia a partida com 2 jogadores
+            status_inicio = self.dog_server_interface.start_match(2)
             if status_inicio.get_code() == "2":
                 jogadores = status_inicio.get_players()
                 if len(jogadores) >= 2:
@@ -236,26 +232,26 @@ class JogadorInterface(DogPlayerInterface):
 
     def atualizar_interface(self, posicoes_atingidas=None):
         self.saldo_label.config(text=f"Saldo: {self.tabuleiro.jogador_local.get_saldo()}")
-        # Atualize a visualização do tabuleiro com as bases do jogador local e remoto
         for y in range(3):
             for x in range(5):
                 if posicoes_atingidas is not None and (y, x) in posicoes_atingidas:
-                    if self.tabuleiro.jogador_local.informar_turno():
+                    vez_jogador_local = self.tabuleiro.jogador_local.informar_turno()
+                    if vez_jogador_local:
                         self.board1[y][x].configure(bg='yellow')
                     else:
                         self.board2[y][x].configure(bg='yellow')
                 else:
-                    if self.tabuleiro.campo_jogador_local.posicao_tem_base(y, x):
+                    posicao_local_tem_base = self.tabuleiro.campo_jogador_local.posicao_tem_base(y, x)
+                    if posicao_local_tem_base:
                         self.board1[y][x].configure(bg='green')
                     else:
                         self.board1[y][x].configure(bg='white')
-
-                    if self.tabuleiro.campo_jogador_remoto.posicao_tem_base(y, x):
+                    posicao_remota_tem_base = self.tabuleiro.campo_jogador_remoto.posicao_tem_base(y, x)
+                    if posicao_remota_tem_base:
                         self.board2[y][x].configure(bg='red')
                     else:
                         self.board2[y][x].configure(bg='white')
 
-        # Se um tiro foi efetuado, agenda a limpeza dos campos acertados após 2 segundos
         if posicoes_atingidas is not None:
             temporizador = threading.Timer(2.0, lambda: self.limpar_sinalizador_de_tiro_da_rodada(posicoes_atingidas))
             temporizador.start()
